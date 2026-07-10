@@ -1,0 +1,232 @@
+/* Vicent Manila — Executive Portfolio Styles */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-padding-top: 5rem; }
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.25;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C8A03B; border-radius: 99px; }
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: #C8A03B;
+  color: #0B1F3A;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  z-index: 9999;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.skip-link:focus { top: 1rem; }
+
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0.75rem;
+  right: 0.75rem;
+  height: 2px;
+  background: #C8A03B;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+  border-radius: 2px;
+}
+.nav-link:hover::after,
+.nav-link.text-gold::after { transform: scaleX(1); }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1), transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: var(--d, 0s);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+.btn-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.btn-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(11, 31, 58, 0.12); }
+
+.card-executive {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.dark .card-executive {
+  background: #1C3557;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.card-executive:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(11, 31, 58, 0.08);
+  border-color: rgba(200, 160, 59, 0.3);
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #C8A03B;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 2.625rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.hero-title {
+  font-size: clamp(2.75rem, 5.5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.monogram {
+  position: relative;
+  width: 280px;
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #0B1F3A 0%, #1C3557 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(200, 160, 59, 0.2);
+  box-shadow: 0 24px 60px rgba(11, 31, 58, 0.2);
+  animation: float 5s ease-in-out infinite;
+}
+.monogram__glow {
+  position: absolute;
+  inset: 15%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 160, 59, 0.2) 0%, transparent 70%);
+  filter: blur(20px);
+}
+.monogram__text {
+  position: relative;
+  font-size: 5rem;
+  font-weight: 700;
+  color: #C8A03B;
+  letter-spacing: -0.04em;
+}
+.monogram__ring {
+  position: absolute;
+  inset: -8px;
+  border: 1px solid rgba(200, 160, 59, 0.2);
+  border-radius: 24px;
+  animation: spin 24s linear infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.timeline-line {
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+.dark .timeline-line { background: rgba(255, 255, 255, 0.1); }
+.timeline-progress {
+  position: absolute;
+  left: 7px;
+  top: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, #C8A03B, #e0c45a);
+  transition: height 0.1s linear;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(200, 160, 59, 0.15);
+  border-radius: 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(200, 160, 59, 0.35);
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: white;
+  color: #0B1F3A;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(11, 31, 58, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 900;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+.dark .back-to-top { background: #1C3557; color: #C8A03B; border-color: rgba(255,255,255,0.1); }
+.back-to-top.is-visible { opacity: 1; visibility: visible; }
+.back-to-top:hover { transform: translateY(-3px); background: #0B1F3A; color: #C8A03B; }
+
+/* Gallery masonry */
+.masonry { columns: 1; column-gap: 1.25rem; }
+@media (min-width: 640px) { .masonry { columns: 2; } }
+@media (min-width: 1024px) { .masonry { columns: 3; } }
+.masonry-item { break-inside: avoid; margin-bottom: 1.25rem; }
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(11, 31, 58, 0.92);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.lightbox img { max-height: 85vh; max-width: 90vw; border-radius: 12px; object-fit: contain; }
+
+/* Prose case study */
+.prose-cs h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; letter-spacing: -0.02em; }
+.prose-cs h3 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #C8A03B; margin: 1.5rem 0 0.5rem; }
+.prose-cs p { margin-bottom: 1.25rem; line-height: 1.75; color: #667085; }
+.dark .prose-cs p { color: rgba(255,255,255,0.65); }
+.prose-cs ul { margin: 0 0 1.25rem 1.25rem; list-style: disc; }
+.prose-cs li { margin-bottom: 0.4rem; line-height: 1.65; color: #667085; }
+.dark .prose-cs li { color: rgba(255,255,255,0.6); }
+
+[x-cloak] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .monogram { animation: none; }
+}
