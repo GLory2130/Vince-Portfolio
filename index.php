@@ -148,14 +148,31 @@ require_once __DIR__ . '/includes/header.php';
 
         <div class="certifications reveal">
             <h3 class="subsection-title">Certifications</h3>
-            <ul class="cert-list">
-                <?php foreach ($certifications as $cert): ?>
-                    <li class="cert-list__item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        <?= htmlspecialchars($cert) ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <div class="cert-carousel" aria-roledescription="carousel" aria-label="Certifications slideshow">
+                <div class="cert-carousel__fade cert-carousel__fade--left" aria-hidden="true"></div>
+                <div class="cert-carousel__viewport">
+                    <ul class="cert-carousel__track">
+                        <?php foreach (array_merge($certifications, $certifications) as $cert): ?>
+                            <li class="cert-card">
+                                <div class="cert-card__icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                </div>
+                                <p class="cert-card__title"><?= htmlspecialchars($cert) ?></p>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <div class="cert-carousel__fade cert-carousel__fade--right" aria-hidden="true"></div>
+            </div>
+            <div class="cert-carousel__controls">
+                <button type="button" class="cert-carousel__btn cert-carousel__btn--prev" aria-label="Previous certification">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="cert-carousel__dots" role="tablist" aria-label="Certification slides"></div>
+                <button type="button" class="cert-carousel__btn cert-carousel__btn--next" aria-label="Next certification">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 </section>

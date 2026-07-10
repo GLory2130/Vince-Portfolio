@@ -91,6 +91,92 @@
         revealElements.forEach(el => el.classList.add('visible'));
     }
 
+    // ── Certifications Slideshow ──
+    const certCarousel = document.querySelector('.cert-carousel');
+    const certTrack = document.querySelector('.cert-carousel__track');
+    const certDotsContainer = document.querySelector('.cert-carousel__dots');
+    const certPrev = document.querySelector('.cert-carousel__btn--prev');
+    const certNext = document.querySelector('.cert-carousel__btn--next');
+
+    if (certCarousel && certTrack && certDotsContainer) {
+        const uniqueCount = certTrack.children.length / 2;
+        let activeIndex = 0;
+
+        for (let i = 0; i < uniqueCount; i++) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'cert-carousel__dot' + (i === 0 ? ' is-active' : '');
+            dot.setAttribute('role', 'tab');
+            dot.setAttribute('aria-label', `Go to certification ${i + 1}`);
+            dot.dataset.index = String(i);
+            certDotsContainer.appendChild(dot);
+        }
+
+        const dots = certDotsContainer.querySelectorAll('.cert-carousel__dot');
+
+        const getSlideWidth = () => {
+            const first = certTrack.children[0];
+            if (!first) return 0;
+            const gap = parseFloat(getComputedStyle(certTrack).gap) || 20;
+            return first.offsetWidth + gap;
+        };
+
+        const goToSlide = (index) => {
+            activeIndex = ((index % uniqueCount) + uniqueCount) % uniqueCount;
+            const offset = activeIndex * getSlideWidth();
+            certTrack.style.animation = 'none';
+            certTrack.style.transform = `translateX(-${offset}px)`;
+            dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+        };
+
+        const resumeMarquee = () => {
+            certTrack.style.animation = '';
+            certTrack.style.transform = '';
+            dots.forEach((dot, i) => dot.classList.toggle('is-active', i === 0));
+            activeIndex = 0;
+        };
+
+        const pauseAuto = () => {
+            certCarousel.classList.add('is-paused');
+        };
+
+        const startAuto = () => {
+            certCarousel.classList.remove('is-paused');
+            resumeMarquee();
+        };
+
+        const manualSlide = (direction) => {
+            pauseAuto();
+            goToSlide(activeIndex + direction);
+            clearTimeout(certCarousel._resumeTimer);
+            certCarousel._resumeTimer = setTimeout(startAuto, 6000);
+        };
+
+        certPrev?.addEventListener('click', () => manualSlide(-1));
+        certNext?.addEventListener('click', () => manualSlide(1));
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                pauseAuto();
+                goToSlide(parseInt(dot.dataset.index, 10));
+                clearTimeout(certCarousel._resumeTimer);
+                certCarousel._resumeTimer = setTimeout(startAuto, 6000);
+            });
+        });
+
+        certCarousel.addEventListener('mouseenter', pauseAuto);
+        certCarousel.addEventListener('mouseleave', () => {
+            clearTimeout(certCarousel._resumeTimer);
+            certCarousel._resumeTimer = setTimeout(startAuto, 800);
+        });
+
+        window.addEventListener('resize', () => {
+            if (certCarousel.classList.contains('is-paused')) {
+                goToSlide(activeIndex);
+            }
+        }, { passive: true });
+    }
+
     // ── Contact Form (AJAX) ──
     const contactForm = document.getElementById('contact-form');
     const formMessage = document.getElementById('form-message');
