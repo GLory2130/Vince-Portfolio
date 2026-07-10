@@ -1,16 +1,16 @@
-DirectoryIndex index.php index.html
+DirectoryIndex index.html
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /Vince-Portfolio/
 
-# Clean URLs for projects
-RewriteRule ^projects/?$ projects.php [L]
-RewriteRule ^project/([a-z0-9-]+)/?$ project.php?slug=$1 [L,QSA]
-RewriteRule ^gallery/?$ gallery.php [L]
-RewriteRule ^leadership/?$ leadership.php [L]
-RewriteRule ^speaking/?$ speaking.php [L]
-RewriteRule ^media/?$ media.php [L]
+# Clean URLs (static HTML)
+RewriteRule ^projects/?$ projects.html [L]
+RewriteRule ^project/([a-z0-9-]+)/?$ project.html?slug=$1 [L,QSA]
+RewriteRule ^gallery/?$ gallery.html [L]
+RewriteRule ^leadership/?$ leadership.html [L]
+RewriteRule ^speaking/?$ speaking.html [L]
+RewriteRule ^media/?$ media.html [L]
 </IfModule>
 
 <IfModule mod_deflate.c>
