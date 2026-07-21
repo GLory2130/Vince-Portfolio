@@ -24,17 +24,17 @@
       return `
         <div class="${cls}">
           <a href="${c.whatsapp}" target="_blank" rel="noopener noreferrer" class="contact-cta contact-cta--whatsapp btn-lift">
-            <i data-lucide="message-circle" class="w-6 h-6"></i>
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
             <span class="contact-cta__title">WhatsApp</span>
             <span class="contact-cta__sub">Chat instantly</span>
           </a>
           <a href="${c.tel}" class="contact-cta contact-cta--phone btn-lift">
-            <i data-lucide="phone" class="w-6 h-6"></i>
+            <i data-lucide="phone" class="w-4 h-4"></i>
             <span class="contact-cta__title">Call</span>
             <span class="contact-cta__sub">${esc(c.phone)}</span>
           </a>
           <a href="${c.mailto}" class="contact-cta contact-cta--email btn-lift">
-            <i data-lucide="mail" class="w-6 h-6"></i>
+            <i data-lucide="mail" class="w-4 h-4"></i>
             <span class="contact-cta__title">Email</span>
             <span class="contact-cta__sub">${esc(c.email)}</span>
           </a>
@@ -84,50 +84,51 @@
 
     renderFooter() {
       const s = S();
-      const c = s.contact;
       const year = new Date().getFullYear();
       return `
         <footer class="bg-navy text-white/70 border-t border-white/10">
-          <div class="max-w-8xl mx-auto px-6 py-16">
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-              <div>
-                <div class="flex items-center gap-2.5 mb-4">
-                  <span class="w-10 h-10 flex items-center justify-center bg-gold text-navy rounded-lg text-sm font-bold">VM</span>
+          <div id="contact" class="max-w-8xl mx-auto px-6 pt-16 pb-12">
+            <div class="max-w-2xl mx-auto text-center mb-8">
+              <p class="section-label mb-3">Connect</p>
+              <h2 class="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight">Let's Build Meaningful Impact Together</h2>
+              <p class="text-white/55 text-sm md:text-base leading-relaxed">Open to strategic partnerships, speaking engagements, leadership consulting, and organizational development collaborations.</p>
+            </div>
+            <div class="max-w-3xl mx-auto mb-8">
+              ${VM.layout.contactCTAs(true)}
+            </div>
+            <div class="flex flex-wrap justify-center gap-3 mb-6">
+              <a href="${s.linkedin}" target="_blank" rel="noopener noreferrer" class="btn-lift inline-flex items-center gap-2 border border-white/15 text-white font-semibold px-4 py-2 rounded-lg text-sm hover:border-gold transition-colors"><i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn</a>
+              <a href="${s.cv}" class="btn-lift inline-flex items-center gap-2 bg-gold text-navy font-semibold px-4 py-2 rounded-lg text-sm" download><i data-lucide="download" class="w-4 h-4"></i> Download CV</a>
+              <a href="speaking.html#booking" class="btn-lift inline-flex items-center gap-2 border border-white/15 text-white font-semibold px-4 py-2 rounded-lg text-sm hover:border-gold transition-colors"><i data-lucide="calendar" class="w-4 h-4"></i> Speaking Inquiries</a>
+            </div>
+            <p class="text-center text-white/45 text-sm flex items-center justify-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-gold"></i> ${esc(s.location)}</p>
+          </div>
+          <div class="border-t border-white/10">
+            <div class="max-w-8xl mx-auto px-6 py-8 flex flex-col lg:flex-row lg:items-start justify-between gap-8">
+              <div class="max-w-sm">
+                <div class="flex items-center gap-2.5 mb-3">
+                  <span class="w-9 h-9 flex items-center justify-center bg-gold text-navy rounded-lg text-xs font-bold">VM</span>
                   <div>
                     <p class="font-semibold text-white text-sm">${esc(s.name)}</p>
-                    <p class="text-xs text-white/50">${esc(s.tagline)}</p>
+                    <p class="text-xs text-white/45">${esc(s.tagline)}</p>
                   </div>
                 </div>
-                <p class="text-sm text-white/50 leading-relaxed">International business development leader building partnerships and empowering youth across Africa.</p>
+                <p class="text-sm text-white/45 leading-relaxed">International business development leader building partnerships and empowering youth across Africa.</p>
               </div>
-              <div>
-                <h3 class="text-xs font-semibold uppercase tracking-widest text-gold mb-4">Navigation</h3>
-                <ul class="space-y-2 text-sm">
-                  <li><a href="index.html#about" class="hover:text-gold transition-colors">About</a></li>
-                  <li><a href="leadership.html" class="hover:text-gold transition-colors">Leadership</a></li>
-                  <li><a href="projects.html" class="hover:text-gold transition-colors">Projects</a></li>
-                  <li><a href="gallery.html" class="hover:text-gold transition-colors">Gallery</a></li>
-                  <li><a href="speaking.html" class="hover:text-gold transition-colors">Speaking</a></li>
-                  <li><a href="media.html" class="hover:text-gold transition-colors">Media</a></li>
+              <nav class="footer-nav" aria-label="Footer navigation">
+                <h3 class="footer-nav__label">Navigation</h3>
+                <ul class="footer-nav__list">
+                  <li><a href="index.html#about">About</a></li>
+                  <li><a href="leadership.html">Leadership</a></li>
+                  <li><a href="projects.html">Projects</a></li>
+                  <li><a href="gallery.html">Gallery</a></li>
+                  <li><a href="speaking.html">Speaking</a></li>
+                  <li><a href="media.html">Media</a></li>
                 </ul>
-              </div>
-              <div>
-                <h3 class="text-xs font-semibold uppercase tracking-widest text-gold mb-4">Connect</h3>
-                <div class="flex flex-col gap-2 text-sm">
-                  <a href="${c.whatsapp}" target="_blank" rel="noopener" class="contact-cta-inline contact-cta-inline--whatsapp"><i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp</a>
-                  <a href="${c.tel}" class="contact-cta-inline contact-cta-inline--phone"><i data-lucide="phone" class="w-4 h-4"></i> ${esc(c.phone)}</a>
-                  <a href="${c.mailto}" class="contact-cta-inline contact-cta-inline--email"><i data-lucide="mail" class="w-4 h-4"></i> ${esc(c.email)}</a>
-                  <a href="${s.linkedin}" target="_blank" rel="noopener" class="hover:text-gold transition-colors flex items-center gap-2 mt-1"><i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn</a>
-                </div>
-              </div>
-              <div>
-                <h3 class="text-xs font-semibold uppercase tracking-widest text-gold mb-4">Get in Touch</h3>
-                ${VM.layout.contactCTAs(true)}
-              </div>
+              </nav>
             </div>
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10 text-xs text-white/40">
+            <div class="max-w-8xl mx-auto px-6 pb-8 text-center sm:text-left text-xs text-white/40">
               <p>&copy; ${year} ${esc(s.name)}. All rights reserved.</p>
-              <p>${esc(s.location)}</p>
             </div>
           </div>
         </footer>

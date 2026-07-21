@@ -66,7 +66,6 @@
       const s = S();
       const d = D();
       const featured = VM.featuredProjects();
-      const c = s.contact;
 
       return `
         <section id="hero" class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-white dark:bg-navy">
@@ -250,28 +249,6 @@
                   <p class="text-sm text-muted leading-relaxed mb-3">${esc(m.excerpt)}</p>
                   <p class="text-xs text-muted">${esc(m.source)} · ${esc(m.date)}</p>
                 </article>`).join('')}
-            </div>
-          </div>
-        </section>
-
-        <section id="contact" class="py-24 bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="card-executive bg-navy dark:bg-navy-secondary p-10 md:p-16 relative overflow-hidden">
-              <div class="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
-              <div class="relative z-10">
-                <div class="max-w-2xl mx-auto text-center mb-10">
-                  <p class="reveal section-label mb-3">Connect</p>
-                  <h2 class="reveal text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">Let's Build Meaningful Impact Together</h2>
-                  <p class="reveal text-white/60 leading-relaxed">Open to strategic partnerships, speaking engagements, leadership consulting, and organizational development collaborations.</p>
-                </div>
-                <div id="contact-ctas" class="reveal max-w-3xl mx-auto mb-10"></div>
-                <div class="reveal flex flex-wrap justify-center gap-4 mb-10">
-                  <a href="${s.linkedin}" target="_blank" rel="noopener" class="btn-lift inline-flex items-center gap-2 border border-white/20 text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:border-gold transition-colors"><i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn Profile</a>
-                  <a href="${s.cv}" class="btn-lift inline-flex items-center gap-2 bg-gold text-navy font-semibold px-5 py-2.5 rounded-lg text-sm" download><i data-lucide="download" class="w-4 h-4"></i> Download CV</a>
-                  <a href="speaking.html#booking" class="btn-lift inline-flex items-center gap-2 border border-white/20 text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:border-gold transition-colors"><i data-lucide="calendar" class="w-4 h-4"></i> Speaking Inquiries</a>
-                </div>
-                <p class="reveal text-center text-white/50 text-sm flex items-center justify-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-gold"></i> ${esc(s.location)}</p>
-              </div>
             </div>
           </div>
         </section>`;

@@ -226,16 +226,17 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1.5rem 1.25rem;
-  border-radius: 14px;
+  gap: 0.35rem;
+  padding: 1rem 1rem;
+  border-radius: 10px;
   text-align: center;
   font-weight: 600;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   border: 1px solid transparent;
 }
-.contact-cta__title { font-size: 1rem; line-height: 1.2; }
-.contact-cta__sub { font-size: 0.75rem; font-weight: 500; opacity: 0.75; }
+.contact-cta svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+.contact-cta__title { font-size: 0.875rem; line-height: 1.2; }
+.contact-cta__sub { font-size: 0.6875rem; font-weight: 500; opacity: 0.75; }
 
 .contact-cta--whatsapp {
   background: #25D366;
@@ -270,6 +271,33 @@ body::before {
 }
 .contact-cta-inline:hover { color: #C8A03B; }
 .contact-cta-inline--whatsapp:hover { color: #25D366; }
+
+/* Footer navigation — horizontal row */
+.footer-nav__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #C8A03B;
+  margin-bottom: 0.75rem;
+}
+.footer-nav__list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+}
+.footer-nav__list a {
+  color: inherit;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+.footer-nav__list a:hover { color: #C8A03B; }
 
 /* Header scroll state */
 .site-header__nav { padding-top: 1rem; padding-bottom: 1rem; }
