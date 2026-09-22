@@ -5,17 +5,17 @@
 window.VM = window.VM || {};
 
 /** Semantic version of this portfolio codebase */
-VM.version = '1.2.0';
+VM.version = '5.4.0';
 
 VM.site = {
   name: 'Vicent Manila',
-  tagline: 'International Business Development Leader',
-  brandLine: 'Leadership • Strategy • Partnerships',
+  tagline: 'Management Consultant · Research & Evaluation · Strategic Partnerships',
+  brandLine: 'Consulting • Research & Evaluation • Partnerships',
   email: 'manilavicent@gmail.com',
   phone: '+255 713 582 606',
   phoneIntl: '+255713582606',
   location: 'Dar es Salaam, Tanzania',
-  linkedin: 'https://www.linkedin.com/in/vicentmanila',
+  linkedin: 'https://www.linkedin.com/in/vicent-manila',
   cv: 'assets/cv/vicent-manila-cv.pdf',
   logo: 'assets/images/vincelogo.png',
   contact: {
@@ -25,13 +25,17 @@ VM.site = {
     email: 'manilavicent@gmail.com',
     phone: '+255 713 582 606',
   },
+  /**
+   * Six destinations maximum (DESIGN.md §8). The former 'Insights' / media.html
+   * route was removed: all five media items were unverifiable placeholders with
+   * no source URLs. See documentation/CONTENT_VERIFICATION.md.
+   */
   nav: [
-    { href: 'index.html#about', label: 'About', page: 'home' },
+    { href: 'index.html#profile', label: 'Profile', page: 'home' },
     { href: 'leadership.html', label: 'Leadership', page: 'leadership' },
-    { href: 'index.html#experience', label: 'Experience' },
-    { href: 'projects.html', label: 'Projects', page: 'projects' },
+    { href: 'projects.html', label: 'Selected Work', page: 'projects' },
     { href: 'gallery.html', label: 'Gallery', page: 'gallery' },
-    { href: 'media.html', label: 'Insights', page: 'media' },
+    { href: 'speaking.html', label: 'Speaking', page: 'speaking' },
     { href: 'index.html#contact', label: 'Contact', page: 'contact', cta: true },
   ],
 };

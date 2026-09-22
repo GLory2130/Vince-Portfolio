@@ -1,114 +1,75 @@
-﻿# Component Documentation
+# Components
 
-**Version:** 1.2.0
+**Status:** current as of v5.4.0  
+**Implementation:** `assets/css/design-system.css`, `assets/js/pages.js`, `assets/js/layout.js`
 
-This project does not use a React/Vue component framework. “Components” are **reusable JS render functions and CSS patterns**.
+The full visual rules live in [`../DESIGN.md`](../DESIGN.md).
 
----
+## Layout primitives
 
-## Table of contents
+| Class | Purpose |
+|---|---|
+| `.vm-container` | primary content width and responsive gutters |
+| `.vm-container--wide` | wide media/gallery container |
+| `.vm-section` | standard vertical rhythm |
+| `.vm-section--expansive` | hero/work/media rhythm |
+| `.vm-section--compact` | compact evidence/contact rhythm |
+| `.vm-section--subtle` | alternate paper surface |
+| `.vm-section--navy` | inverse surface |
 
-1. [Module components](#module-components)
-2. [UI patterns](#ui-patterns)
-3. [Page modules](#page-modules)
+## Typography
 
----
+| Class | Use |
+|---|---|
+| `.vm-display*` | editorial/narrative headings |
+| `.vm-heading` | structural sans heading |
+| `.vm-eyebrow` | small uppercase label |
+| `.vm-lead` | lead paragraph |
+| `.vm-prose` | bounded prose |
+| `.vm-caption` | metadata |
 
-## Module components
+Long editorial headings and body content are allowed to shrink/wrap on mobile; grid/flex children use `min-width:0`.
 
-### `VM.layout.renderHeader(currentPage)`
+## Buttons and targets
 
-| | |
-|--|--|
-| **Purpose** | Fixed site header + mobile overlay/drawer markup |
-| **Inputs** | `currentPage` string (`body.dataset.page`) |
-| **Outputs** | HTML string (header + overlay + drawer) |
-| **Dependencies** | `VM.site`, logo path, Lucide |
-| **Responsive** | Desktop nav `lg+`; drawer `<1024px` |
-| **Interactions** | Toggle wired in `VM.ui.initNav` |
+- primary: navy fill,
+- secondary: bordered,
+- tertiary: editorial text/underline,
+- inverse modifier for navy surfaces.
 
-### `VM.layout.renderFooter()`
+Interactive targets are at least 44px high. Grouped CTA buttons become full-width on narrow phones.
 
-| | |
-|--|--|
-| **Purpose** | Connect section + site footer + back-to-top |
-| **Inputs** | `VM.site`, `VM.images`, `VM.version` |
-| **Outputs** | HTML string injected into `#site-footer` |
-| **Dependencies** | Contact URLs, portrait image |
+## Content components
 
-### `VM.layout.contactCTAs(compact)`
+| Component | Responsive behavior |
+|---|---|
+| `.vm-feature` | stacked below 900px; editorial split above |
+| `.vm-profile` | one column below 900px |
+| `.vm-index` | number/title/content stack with desktop 3-column structure |
+| `.vm-chrono` | period above role on mobile; period rail on desktop |
+| `.vm-metrics` | single column on small phone; fluid row above |
+| `.vm-publication-grid` | one column mobile; two columns from 800px |
+| `.vm-event-feature` | one column below 800px |
+| `.vm-doc` | stacked narrow phone; structured row at larger widths |
+| `.vm-filter` | horizontal control rail below 600px |
 
-| | |
-|--|--|
-| **Purpose** | Compact WhatsApp / Call / Email button grid |
-| **Inputs** | `compact` boolean (CSS density) |
-| **Used by** | Speaking booking area via `.contact-ctas-slot` |
+## Navigation
 
-### `VM.pages.projectCard(p, i)`
+One breakpoint owns navigation:
 
-| | |
-|--|--|
-| **Purpose** | Project teaser card |
-| **Inputs** | Project object, index (animation delay) |
-| **Outputs** | Article HTML with `--img-pos` |
-| **Styling** | `.project-card*` |
+- below 900px: mobile drawer,
+- 900px and above: inline navigation.
 
-### Gallery / project lightbox controllers
+Do not reintroduce utility-class visibility logic.
 
-| | |
-|--|--|
-| **Purpose** | Full-screen image viewer |
-| **Inputs** | Image list `{src, alt, …}` |
-| **Behaviours** | Prev/next, Escape, backdrop, swipe, focus return |
-| **Files** | `initGallery`, `initProjectGallery` |
+## Lightboxes
 
-### `VM.ui` methods
+Gallery and project lightboxes use dynamic viewport constraints, keyboard controls, swipe, Escape close and focus return.
 
-| Method | Role |
-|--------|------|
-| `refreshIcons` | `lucide.createIcons()` |
-| `setTheme` / `toggleTheme` | Dark mode |
-| `openNav` / `closeNav` / `toggleNav` | Mobile menu + scroll lock + focus trap |
-| `initReveal` | Scroll fade-up |
-| `initCounters` | Metric count-up |
-| `initTimeline` | Timeline progress |
-| `initTestimonials` | Carousel |
-| `initBackToTop` | Floating control |
+## Adding components
 
----
-
-## UI patterns
-
-| Pattern | CSS / markup | Notes |
-|---------|--------------|-------|
-| Section label | `.section-label` | Gold uppercase eyebrow |
-| Section title | `.section-title` | Serif display |
-| Executive card | `.card-executive` | White/navy card shell |
-| Portrait frame | `.portrait-frame*` | Gold ring framing |
-| Skill card | `.skills-card*` | Competency feature card |
-| Connect card | `.connect-card*` | Contact channels |
-| Stat card | `.stat-card` | Metric tile |
-| Filter chip | `.filter-btn` / `.gallery-filter-btn` | Active gold state |
-| Reveal | `.reveal` / `.reveal.in` | Entrance motion |
-
-### Example usage (conceptual)
-
-```js
-const html = VM.pages.projectCard(VM.getProject('leading-aiesec-rwanda'), 0);
-```
-
----
-
-## Page modules
-
-| Function | Page |
-|----------|------|
-| `renderHome` | Home |
-| `renderLeadership` | Leadership |
-| `renderProjects` | Projects list |
-| `renderProject` + `initProjectRedirect` | Case study |
-| `renderGallery` + `initGallery` | Gallery |
-| `renderMedia` | Insights |
-| `renderSpeaking` | Speaking |
-
-Each returns an HTML string assigned to `#main-content` (except project detail, which fills `#project-root` after render).
+1. Reuse existing layout/type primitives first.
+2. Use semantic design tokens.
+3. Add current styles to `design-system.css`, never the legacy stylesheet.
+4. Verify 320px layout and 44px targets.
+5. Add/update responsive browser coverage when behavior is new.

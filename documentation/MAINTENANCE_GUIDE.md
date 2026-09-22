@@ -1,140 +1,105 @@
-﻿# Maintenance Guide
+# Maintenance Guide
 
-**Version:** 1.2.0
-
----
-
-## Table of contents
-
-1. [Principles](#principles)
-2. [Contact details](#contact-details)
-3. [Curriculum vitae](#curriculum-vitae)
-4. [Biography and hero](#biography-and-hero)
-5. [Leadership metrics](#leadership-metrics)
-6. [Experience timeline](#experience-timeline)
-7. [Projects](#projects)
-8. [Gallery](#gallery)
-9. [Testimonials](#testimonials)
-10. [Media / Insights](#media--insights)
-11. [Speaking](#speaking)
-12. [Navigation](#navigation)
-13. [Branding](#branding)
-14. [Version bump](#version-bump)
-15. [Deploy](#deploy)
-
----
+**Status:** current for v5.4.0
 
 ## Principles
 
-1. Prefer editing **data modules** over HTML shells.
-2. Keep documentation in sync when behaviour changes.
-3. Test mobile + desktop after visual changes.
-4. Do not commit secrets (none expected today).
+1. Edit central data/config before editing page templates.
+2. Keep professional claims source-backed.
+3. Keep responsive behavior intact at the 320px floor.
+4. Update documentation when behavior changes.
+5. Use small commits and a pull request.
 
----
-
-## Contact details
+## Contact and identity
 
 Edit `assets/js/config.js`:
 
-- `VM.site.email`, `phone`, `phoneIntl`
-- `VM.site.contact.whatsapp`, `tel`, `mailto`, `email`, `phone`
-- LinkedIn, location, CV path
+- name/tagline/brand line,
+- email and phone,
+- LinkedIn,
+- location,
+- CV path,
+- navigation.
 
-Display format for phone: `+255 713 582 606`.  
-WhatsApp: `https://wa.me/255713582606`.
+If structured profile facts change, also review the JSON-LD in `index.html`.
 
-Also update JSON-LD in `index.html` if email/telephone change.
+## CV
 
----
+Replace the file at the stable path:
 
-## Curriculum vitae
+`assets/cv/vicent-manila-cv.pdf`
 
-1. Export PDF.
-2. Save as `assets/cv/vicent-manila-cv.pdf` (or update `VM.site.cv`).
-3. Hard-refresh and click CV in header / Connect.
+Keeping the stable path prevents download links and case-study evidence links from breaking.
 
----
+## Professional content
 
-## Biography and hero
+Edit `assets/js/data.js` for:
 
-Edit `VM.data.hero` and `VM.data.about` in `assets/js/data.js`.  
-Portrait paths: `VM.images` in `config.js`.
+- hero/about,
+- expertise,
+- experience,
+- impact metrics,
+- projects,
+- speaking,
+- external resources,
+- appendix records.
 
----
-
-## Leadership metrics
-
-Edit `VM.data.impactStats` and `VM.data.hero.stats`.
-
----
-
-## Experience timeline
-
-Edit `VM.data.experience` array (period, title, organization, country, overview, responsibilities, achievements, impact, skills).
-
----
+Record new factual claims in [CONTENT_VERIFICATION.md](./CONTENT_VERIFICATION.md).
 
 ## Projects
 
-1. Add/update object in `VM.data.projects`.
-2. Required: `slug`, content fields, `image`, `imagePosition`, `gallery`, `related`.
-3. Set `featured: true` for homepage.
-4. Register category in `projectCategories` if new.
-5. Open `project.html?slug=your-slug`.
+Each project should provide:
 
----
+- unique slug,
+- category,
+- summary,
+- full case-study narrative,
+- evidence/resources where available,
+- image and focal position,
+- gallery,
+- related work.
+
+Test with:
+
+`project.html?slug=your-slug`
 
 ## Gallery
 
-1. Add image files under `Vince/gallery/` (+ thumb).
-2. Append entry to `VM.galleryImages` in `gallery-data.js`.
-3. Use existing `category` keys or extend `galleryFilters`.
+Add optimized media and update `assets/js/gallery-data.js`.
 
----
+Provide:
+- alt text,
+- category,
+- title,
+- caption,
+- dimensions when known,
+- thumbnail when appropriate.
 
-## Testimonials
+## Styling
 
-Edit `VM.data.testimonials` (`name`, `position`, `organization`, `quote`, `initials`).
+Current visual work belongs in `assets/css/design-system.css`.
 
----
+Do not add new component logic to `executive.css`; it is a legacy compatibility layer.
 
-## Media / Insights
+## Responsive maintenance
 
-Edit `VM.data.mediaItems` and `mediaFilters`.
+When modifying layout:
 
----
-
-## Speaking
-
-Edit `speakingTopics`, `speakingEngagements` in `data.js`. Page: `speaking.html`.
-
----
-
-## Navigation
-
-Edit `VM.site.nav` in `config.js`. Footer links are duplicated in `layout.js` `renderFooter` — update both if adding pages.
-
----
-
-## Branding
-
-| Asset | Location |
-|-------|----------|
-| Logo | `assets/images/vincelogo.png` |
-| Colours | `:root` in `executive.css` + Tailwind config in HTML |
-| Fonts | Google Fonts link in HTML heads |
-
----
+1. update CSS,
+2. run `npm run validate`,
+3. run `npm run test:responsive`,
+4. manually inspect at least 320, 375, 430, 768 and 900px,
+5. update [MOBILE_QA_MATRIX.md](./MOBILE_QA_MATRIX.md) if the contract changes.
 
 ## Version bump
 
-1. Update `VM.version` in `config.js`.
-2. Update [CHANGELOG.md](./CHANGELOG.md).
-3. Tag release `vX.Y.Z` (see [VERSIONING.md](./VERSIONING.md)).
+For user-visible releases:
 
----
+1. update `VM.version`,
+2. update `?v=` in every HTML shell,
+3. update [CHANGELOG.md](./CHANGELOG.md),
+4. keep documentation headers aligned.
 
 ## Deploy
 
-Follow [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).

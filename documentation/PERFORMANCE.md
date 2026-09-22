@@ -1,76 +1,63 @@
-﻿# Performance
+# Performance
 
-**Version:** 1.2.0
-
----
-
-## Table of contents
-
-1. [Strategy](#strategy)
-2. [Images](#images)
-3. [CSS and JS](#css-and-js)
-4. [Caching](#caching)
-5. [Animations](#animations)
-6. [Lighthouse goals](#lighthouse-goals)
-7. [Known costs](#known-costs)
+**Status:** current for v5.4.0
 
 ---
 
-## Strategy
+## Runtime profile
 
-Keep the site static, minimize third-party JS, optimize photographs, and avoid layout shift with dimensions / aspect ratios.
+The production site remains static with no framework and no build step.
+
+Current runtime assets include:
+
+- legacy `executive.css`,
+- `utilities.css`,
+- authoritative `design-system.css`,
+- six small vanilla JavaScript modules,
+- local portfolio imagery,
+- appendix PDFs loaded only when requested.
 
 ---
 
 ## Images
 
-- Web-optimized copies under `Vince/web/`
-- Gallery thumbs for grids; full `src` in lightbox
-- `loading="lazy"` on below-the-fold images
-- Heroes / LCP candidates: not lazy; some use `fetchpriority="high"`
-- `decoding="async"` widely used
-- Cover containers use `aspect-ratio` to reserve space
+- hero images use `fetchpriority="high"`,
+- below-fold imagery uses lazy loading,
+- key images provide intrinsic width/height,
+- gallery thumbnails load in the grid while full images load in the lightbox,
+- object-position is controlled for editorial crops.
+
+Large source gallery files remain in the repository, but web-optimized copies are used where available.
 
 ---
 
-## CSS and JS
+## Third-party requests
 
-- One primary stylesheet: `executive.css`
-- Small vanilla JS modules (no SPA runtime)
-- Lucide icons created on demand after DOM injection
-- No heavy animation libraries
+Production makes two third-party classes of request:
 
----
+1. Google Fonts.
+2. Pinned Lucide 0.468.0.
 
-## Caching
-
-Apache `.htaccess` sets long-lived Expires for static assets when hosted under Apache with `mod_expires`.
-
-CDN hosts (Netlify/Cloudflare) should enable standard asset caching.
+Lucide is pinned so an upstream release no longer changes production implicitly.
 
 ---
 
-## Animations
+## Responsive performance
 
-CSS transitions + IntersectionObserver reveals. Autoplay carousels respect reduced motion.
+Phone layouts avoid loading alternate mobile-specific assets or JavaScript bundles. The same semantic markup is reflowed through CSS.
 
----
-
-## Lighthouse goals
-
-| Category | Target |
-|----------|--------|
-| Performance | ≥ 85 mobile / ≥ 90 desktop (network dependent) |
-| Accessibility | ≥ 90 |
-| Best Practices | ≥ 90 |
-| SEO | ≥ 90 (after robots/sitemap/OG added) |
-
-Validate on production URLs with cache warmed.
+Dynamic lightbox media remains contained rather than generating separate responsive image requests.
 
 ---
 
-## Known costs
+## Development-only tooling
 
-- Tailwind CDN compiles in-browser (dev convenience; consider built CSS later)
-- Lucide `@latest` + Google Fonts are network round-trips
-- Large hero photographs dominate LCP — keep web exports lean
+Playwright and Node are QA dependencies only. They are not shipped to the browser and do not change Vercel's static runtime.
+
+---
+
+## Largest remaining optimization
+
+`executive.css` is still the primary technical debt item. It contains a large amount of superseded styling and should eventually be retired through measured extraction, not deleted wholesale.
+
+The appendix PDFs are intentionally download-only and therefore do not affect initial page load.

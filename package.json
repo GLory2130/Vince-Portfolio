@@ -1,0 +1,13 @@
+{
+  "name": "vicent-manila-portfolio",
+  "private": true,
+  "version": "5.4.0",
+  "description": "Static portfolio QA tooling for Vicent Manila",
+  "scripts": {
+    "validate": "node scripts/validate-site.mjs",
+    "test:responsive": "playwright test tests/responsive.spec.mjs --reporter=line"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.52.0"
+  }
+}

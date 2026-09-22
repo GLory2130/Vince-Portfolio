@@ -1,89 +1,97 @@
-﻿# Accessibility
+# Accessibility
 
-**Version:** 1.2.0
-
----
-
-## Table of contents
-
-1. [Standards intent](#standards-intent)
-2. [Structure](#structure)
-3. [Keyboard](#keyboard)
-4. [ARIA](#aria)
-5. [Focus](#focus)
-6. [Images](#images)
-7. [Colour and motion](#colour-and-motion)
-8. [Touch targets](#touch-targets)
-9. [Testing](#testing)
+**Target:** WCAG 2.2 AA  
+**Status:** current for v5.4.0
 
 ---
 
-## Standards intent
+## Contrast
 
-Aim for WCAG 2.2 AA patterns where practical for a marketing/portfolio site.
+The design system uses separate semantic tokens for decorative gold and gold text. Muted text and inverse-surface text are designed for AA contrast against their rendered surfaces.
+
+Contrast must be checked against the actual opaque background, not an assumed parent token.
 
 ---
 
 ## Structure
 
-- Landmark regions: header, main, footer, nav labels
-- Skip link to `#main-content`
-- Heading hierarchy per page (H1 in hero / page title)
-- Lists for nav and skill tags where marked up as `<ul>`
+- one `h1` per page,
+- no deliberate heading-level skips,
+- semantic header/nav/main/footer landmarks,
+- skip link on every route,
+- gallery captions are not promoted to headings.
 
 ---
 
-## Keyboard
+## Navigation
 
-| Control | Keys |
-|---------|------|
-| Mobile menu | Enter/Space on toggle; Escape closes; Tab cycles (focus trap) |
-| Lightbox | Escape, ArrowLeft, ArrowRight |
-| Filters / dots | Button focus + Enter/Space |
+The mobile navigation provides:
 
----
+- real button toggle,
+- synchronized `aria-expanded`,
+- synchronized drawer `aria-hidden`,
+- Escape close,
+- focus containment,
+- focus return,
+- active page via `aria-current`,
+- background scroll lock,
+- resize/orientation handling.
 
-## ARIA
-
-| Pattern | Attributes |
-|---------|------------|
-| Menu button | `aria-expanded`, `aria-controls="nav-drawer"`, `aria-label` |
-| Drawer | `role="dialog"`, `aria-modal`, `aria-label="Mobile navigation"` |
-| Lightbox | `role="dialog"`, `aria-modal`, live counter |
-| Gallery cards | `role="button"`, `tabindex="0"`, descriptive `aria-label` |
-| Theme toggle | `aria-label="Toggle dark mode"` |
+At 900px the drawer is removed from layout and desktop navigation takes over.
 
 ---
 
-## Focus
+## Interactive targets
 
-- Visible `:focus-visible` styles on interactive controls
-- Focus moves into menu/lightbox on open
-- Focus returns to trigger on close
+Buttons, filters, mobile links and desktop navigation links use a 44px minimum target.
 
----
-
-## Images
-
-Meaningful `alt` text on content images; decorative icons marked `aria-hidden="true"`.
+Responsive Playwright tests fail the PR if tested controls render below the threshold.
 
 ---
 
-## Colour and motion
+## Focus visibility
 
-- Do not rely on colour alone for active nav (underline / gold weight)
-- `@media (prefers-reduced-motion: reduce)` disables or shortens transitions and autoplay
+Global `:focus-visible` styles remain enabled. Gallery cards and lightbox controls have dedicated focus treatment.
 
----
-
-## Touch targets
-
-Primary controls target ≥44×44px (nav toggle, CTAs, lightbox buttons, testimonial controls).
+Focus is never intentionally removed.
 
 ---
 
-## Testing
+## Reduced motion
 
-- Keyboard-only pass on Home, Projects, Gallery, Connect
-- Screen reader spot-check of menu and lightbox
-- Contrast check for gold text on navy and body text on canvas
+`prefers-reduced-motion: reduce` collapses animation and transition durations and changes back-to-top scrolling from smooth to instant.
+
+Content is not gated behind animation.
+
+---
+
+## Lightboxes
+
+Project and gallery lightboxes:
+
+- are modal dialogs,
+- provide accessible names on controls,
+- support Escape and arrow keys,
+- support swipe,
+- return focus to the opener,
+- constrain media inside the dynamic viewport.
+
+---
+
+## Automated coverage
+
+PR CI covers:
+
+- JavaScript runtime errors,
+- horizontal overflow,
+- navigation mode,
+- target size,
+- all seven public routes at five representative viewport sizes.
+
+Automated tests do not replace manual assistive-technology testing.
+
+---
+
+## Known gap
+
+A manual pass with NVDA, JAWS or VoiceOver has not yet been completed. This remains an open verification item.

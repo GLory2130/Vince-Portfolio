@@ -1,87 +1,54 @@
 # Documentation Index
 
-**Project:** Vincent Manila Portfolio  
-**Codebase version:** `1.2.0`  
-**Last updated:** 2026-07-24
+**Status:** current as of v5.4.0
 
-This index is the map of the full documentation suite. Start with the [README](./README.md) if you are new to the project.
+## Start here
 
----
+| File | Purpose |
+|---|---|
+| [README.md](./README.md) | Product and repository overview |
+| [SITE_REVISION_2026-09.md](./SITE_REVISION_2026-09.md) | Current site-wide revision scope |
+| [MOBILE_QA_MATRIX.md](./MOBILE_QA_MATRIX.md) | Required route/viewport QA matrix |
+| [`../DESIGN.md`](../DESIGN.md) | Visual design source of truth |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Runtime and QA architecture |
 
-## Table of contents
+## Design & frontend
 
-### Getting started
+| File | Purpose |
+|---|---|
+| [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) | Design-system implementation |
+| [DESIGN_REFERENCE_ANALYSIS.md](./DESIGN_REFERENCE_ANALYSIS.md) | Design references and rationale |
+| [COMPONENT_DOCUMENTATION.md](./COMPONENT_DOCUMENTATION.md) | Component inventory |
+| [PAGE_DOCUMENTATION.md](./PAGE_DOCUMENTATION.md) | Route structure |
+| [RESPONSIVE_GUIDE.md](./RESPONSIVE_GUIDE.md) | Responsive rules and breakpoints |
+| [ACCESSIBILITY.md](./ACCESSIBILITY.md) | Accessibility target and behavior |
+| [PERFORMANCE.md](./PERFORMANCE.md) | Runtime performance decisions |
+| [NAVIGATION.md](./NAVIGATION.md) | Header/drawer behavior |
 
-| Document | Description |
-|----------|-------------|
-| [README.md](./README.md) | Main entry point, install, overview, links |
-| [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) | Purpose, brand, audience, scope |
-| [FOLDER_STRUCTURE.md](./FOLDER_STRUCTURE.md) | Directory tree and file roles |
-| [TECHNOLOGY_STACK.md](./TECHNOLOGY_STACK.md) | Languages, CDNs, hosting stack |
+## Content integrity
 
-### Architecture & product
+| File | Purpose |
+|---|---|
+| [CONTENT_VERIFICATION.md](./CONTENT_VERIFICATION.md) | Verified claims and source hierarchy |
+| [CONTENT_NEEDS_VERIFICATION.md](./CONTENT_NEEDS_VERIFICATION.md) | Content intentionally held back |
+| [IMAGE_ASSETS.md](./IMAGE_ASSETS.md) | Image inventory and handling |
 
-| Document | Description |
-|----------|-------------|
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | App structure, routing, data flow |
-| [FEATURES.md](./FEATURES.md) | Feature catalogue |
-| [COMPONENT_DOCUMENTATION.md](./COMPONENT_DOCUMENTATION.md) | Layout, UI, and page modules |
-| [PAGE_DOCUMENTATION.md](./PAGE_DOCUMENTATION.md) | Every HTML page |
-| [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) | Colours, type, spacing, components |
-| [RESPONSIVE_GUIDE.md](./RESPONSIVE_GUIDE.md) | Breakpoints and layout behaviour |
+## Engineering & operations
 
-### Content & assets
-
-| Document | Description |
-|----------|-------------|
-| [IMAGE_ASSETS.md](./IMAGE_ASSETS.md) | Image folders, naming, optimization |
-| [API_AND_EXTERNAL_SERVICES.md](./API_AND_EXTERNAL_SERVICES.md) | WhatsApp, email, fonts, CDNs |
-
-### Quality
-
-| Document | Description |
-|----------|-------------|
-| [SEO_DOCUMENTATION.md](./SEO_DOCUMENTATION.md) | Meta, OG, structured data |
-| [ACCESSIBILITY.md](./ACCESSIBILITY.md) | A11y patterns and checks |
-| [PERFORMANCE.md](./PERFORMANCE.md) | Loading, images, Lighthouse goals |
-| [SECURITY.md](./SECURITY.md) | Links, deps, deployment hygiene |
-
-### Operations
-
-| Document | Description |
-|----------|-------------|
-| [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) | Local, Apache, static hosts |
-| [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md) | How to edit content safely |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Branching, commits, PRs |
-| [KNOWN_ISSUES.md](./KNOWN_ISSUES.md) | Limitations and follow-ups |
-| [FUTURE_ROADMAP.md](./FUTURE_ROADMAP.md) | Planned enhancements |
-
-### Versioning & legal
-
-| Document | Description |
-|----------|-------------|
-| [CHANGELOG.md](./CHANGELOG.md) | Semantic version history |
-| [VERSIONING.md](./VERSIONING.md) | SemVer policy and release tags |
-| [LICENSE.md](./LICENSE.md) | Licensing notes |
-
-### Media
-
-| Path | Description |
-|------|-------------|
-| [screenshots/](./screenshots/) | Place desktop/mobile captures here |
-
----
-
-## Quick links for common tasks
-
-- Update phone/email → [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md#contact-details) + `assets/js/config.js`
-- Add a project → [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md#projects)
-- Replace CV → [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md#curriculum-vitae)
-- Deploy → [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
-- Fix mobile layout → [RESPONSIVE_GUIDE.md](./RESPONSIVE_GUIDE.md)
-
----
-
-## Source of truth
-
-Documentation is written against the **actual** repository implementation. When code and docs diverge, update documentation in the same change set (see [CONTRIBUTING.md](./CONTRIBUTING.md)).
+| File | Purpose |
+|---|---|
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Branch, commit and PR workflow |
+| [TECHNOLOGY_STACK.md](./TECHNOLOGY_STACK.md) | Runtime and QA dependencies |
+| [FOLDER_STRUCTURE.md](./FOLDER_STRUCTURE.md) | Repository layout |
+| [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md) | Content/system maintenance |
+| [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) | Local and production deployment |
+| [VERSIONING.md](./VERSIONING.md) | Release/version policy |
+| [KNOWN_ISSUES.md](./KNOWN_ISSUES.md) | Current technical debt |
+| [SECURITY.md](./SECURITY.md) | Security surface |
+| [SEO_DOCUMENTATION.md](./SEO_DOCUMENTATION.md) | Metadata and sitemap |
+| [API_AND_EXTERNAL_SERVICES.md](./API_AND_EXTERNAL_SERVICES.md) | External requests |
+| [FEATURES.md](./FEATURES.md) | Feature inventory |
+| [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) | Product purpose |
+| [FUTURE_ROADMAP.md](./FUTURE_ROADMAP.md) | Deferred work |
+| [CHANGELOG.md](./CHANGELOG.md) | Release history |
+| [LICENSE.md](./LICENSE.md) | Terms |

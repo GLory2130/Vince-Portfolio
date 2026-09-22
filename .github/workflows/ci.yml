@@ -1,0 +1,55 @@
+name: Portfolio CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate static portfolio
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run repository validation
+        run: node scripts/validate-site.mjs
+
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          for file in assets/js/*.js; do
+            node --check "$file"
+          done
+
+      - name: Install responsive test tooling
+        run: npm install --ignore-scripts
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start static site
+        shell: bash
+        run: |
+          python3 -m http.server 4173 > /tmp/vicent-portfolio-http.log 2>&1 &
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4173/index.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/vicent-portfolio-http.log
+          exit 1
+
+      - name: Run responsive browser smoke tests
+        run: npm run test:responsive

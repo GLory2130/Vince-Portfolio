@@ -1,137 +1,134 @@
-﻿# Responsive Guide
+# Responsive Guide
 
-**Version:** 1.2.0
-
----
-
-## Table of contents
-
-1. [Breakpoints](#breakpoints)
-2. [Global behaviour](#global-behaviour)
-3. [Navigation](#navigation)
-4. [Homepage hero](#homepage-hero)
-5. [Grids](#grids)
-6. [Project detail](#project-detail)
-7. [Gallery](#gallery)
-8. [Competencies](#competencies)
-9. [Timeline](#timeline)
-10. [Connect & footer](#connect--footer)
-11. [Lightbox](#lightbox)
-12. [Landscape phones](#landscape-phones)
-13. [Testing checklist](#testing-checklist)
+**Status:** current for v5.4.0  
+**Mobile floor:** 320px  
+**Navigation breakpoint:** 900px
 
 ---
 
-## Breakpoints
+## 1. Viewport matrix
 
-| Width | Intent |
-|-------|--------|
-| ≤360px | Extra-small phones |
-| ≤480px | Small phones (hero CTAs stack) |
-| ≥640px | Large phones / small tablets (2-col grids) |
-| ≥768px | Tablets |
-| ≤1023px / ≥1024px | Mobile chrome vs desktop nav |
-| ≥1440px | Gallery 4-column masonry |
+Every public route is covered by the responsive browser smoke suite at:
 
-CSS also uses `orientation: landscape` with `max-width: 1023px`, `hover: none`, and `prefers-reduced-motion`.
+- 320 × 720
+- 375 × 812
+- 430 × 932
+- 768 × 1024
+- 900 × 900
+- 1280 × 800
 
-Prefer **`100dvh`** (with `100vh` fallback) for full-viewport panels.
+Manual visual review should also include 360, 390, 1024, 1440 and 1920 widths.
 
----
+The acceptance floor is simple: **no horizontal page overflow at any supported width**.
 
-## Global behaviour
+```js
+document.documentElement.scrollWidth <= document.documentElement.clientWidth
+```
 
-- Horizontal padding via `--page-pad-x` on major containers under 1024px.
-- Section vertical padding compresses on mobile.
-- Images in cover containers use `object-fit: cover` + configurable `object-position`.
-- Avoid relying on `overflow-x: hidden` as the only overflow fix.
+The full manual route matrix lives in [MOBILE_QA_MATRIX.md](./MOBILE_QA_MATRIX.md).
 
 ---
 
-## Navigation
+## 2. Breakpoints
 
-| Viewport | Behaviour |
-|----------|-----------|
-| ≥1024px | Inline nav links + Contact + theme |
-| <1024px | Hamburger; drawer from right; full remaining height under header |
+The site uses a small set of deliberate breakpoints instead of one breakpoint per component.
 
-Safe-area padding on drawer actions. Body scroll locked while open.
+| Range | Behavior |
+|---|---|
+| `< 480px` | small-phone type/spacing, stacked action groups, compact document rows |
+| `480–599px` | phone composition with normal type scale |
+| `600–899px` | tablet composition, mobile navigation still active |
+| `≥ 900px` | desktop navigation and editorial multi-column layouts |
+| `≥ 1024px` | gallery/project grids may expand to three columns |
 
----
-
-## Homepage hero
-
-**Desktop (≥1024):** Multi-column shell preserved.
-
-**Mobile:** Single column order — logo/eyebrow → title → roles → portrait → summary → CTAs → metrics.
-
-Portrait: ~78–90% width, max ~340px, `object-position: top center`.
+**900px is the only navigation breakpoint.** The drawer and desktop links must never be active at the same time.
 
 ---
 
-## Grids
+## 3. Global responsive contract
 
-| Component | Mobile | Tablet | Desktop |
-|-----------|--------|--------|---------|
-| Projects | 1 | 2 | 3 |
-| Skills | 1 | 2 | 3 |
-| Media | 1 | 2 | 3 |
-| Connect cards | 1 | 1 | 3 |
-| Impact stats | 2 | 3 | 6 |
-| Action gallery | 2 | 3 | 6 |
-| Project gallery | 1 | 2 | 3 |
+`design-system.css` owns the authoritative responsive rules and loads after the legacy stylesheet.
 
----
+Site-wide protections include:
 
-## Project detail
-
-Mobile hero uses **auto height** with readable overlay content (no clipped titles). Gallery becomes single column under 640px.
+- `box-sizing: border-box`,
+- `min-width: 0` on grid/flex children,
+- safe-area padding for fixed navigation,
+- `overflow-wrap` on long editorial text,
+- horizontal page clipping,
+- dynamic viewport units for lightboxes,
+- full-width grouped CTAs on narrow phones,
+- horizontally scrollable filter rails on phones,
+- 44px minimum interactive targets.
 
 ---
 
-## Gallery
+## 4. Route behavior
 
-Masonry columns 1→2→3→4. Filters may scroll horizontally on small screens. Overlays visible on touch devices (`hover: none`).
-
----
-
-## Competencies
-
-Single column cards; tags wrap with flex + gap. Featured Business Development card retains stronger gold border.
-
----
-
-## Timeline
-
-Always vertical; line on the left. Thumbs hide below `sm` where marked `hidden sm:block`.
+| Route | Phone | Tablet | Desktop |
+|---|---|---|---|
+| Home | portrait-first; one-column work/publications/profile | selective 2-column image grids | editorial split layouts |
+| Leadership | chronology and footprint stack | wider single-column reading | chronology uses period rail |
+| Projects | filter rail scrolls; case studies stack | stacked features with more breathing room | alternating two-column features |
+| Project detail | hero copy contained; 1-column gallery/impact | gallery may become 2 columns | full editorial case-study layout |
+| Gallery | 1-column masonry and scrollable filters | 2 columns | 3 columns |
+| Speaking | portrait-first; event/meta stack; booking CTAs stack | event may split near 800px | two-column hero/event |
+| Appendix | documents stack; download actions full width | number/body/action flow | 3-column document rows |
 
 ---
 
-## Connect & footer
+## 5. Touch targets
 
-Mobile order: copy → contact cards → location → LinkedIn/CV → quote → portrait. Footer stacks; back-to-top respects safe-area.
+Automated browser tests check these selectors for a minimum rendered height of 44px:
 
----
+```text
+button
+a.vm-btn
+.vm-filter
+.nav-mobile-link
+.vm-nav__link
+```
 
-## Lightbox
-
-Fits `100dvh`; controls bottom-aligned on small screens; z-index above header.
-
----
-
-## Landscape phones
-
-Drawer link padding tightened; project hero min-height adjusted; hero top padding reduced.
+Tertiary links and desktop navigation explicitly carry a 44px minimum even though their visual treatment remains light.
 
 ---
 
-## Testing checklist
+## 6. Filter behavior
 
-Verify at 320, 360, 375, 390, 412, 430, 768, 1024, 1440 and at least one landscape size:
+Below 600px, project and gallery filters become a horizontal scroll rail. This is intentional: a single-line rail is more usable than a tall wall of wrapped pills and cannot widen the page because the scroll is contained inside the control region.
 
-- [ ] No horizontal page scroll
-- [ ] Menu fully usable
-- [ ] Heroes readable
-- [ ] Cards/tap targets ≥44px
-- [ ] Lightbox closable
-- [ ] Contact links work
+---
+
+## 7. Dynamic viewport behavior
+
+Mobile navigation and lightboxes use `100dvh` in addition to legacy `vh` fallbacks.
+
+The drawer:
+
+- locks body position while open,
+- retains the original scroll position,
+- restores it on close,
+- responds to resize, orientation change and `visualViewport` resize.
+
+Lightboxes constrain images and controls inside the dynamic viewport, including safe-area insets.
+
+---
+
+## 8. Automated testing
+
+Run:
+
+```bash
+npm install
+node scripts/validate-site.mjs
+npm run test:responsive
+```
+
+The Playwright suite starts against a local static server in CI and checks all seven routes for:
+
+- horizontal overflow,
+- navigation mode at the 900px breakpoint,
+- runtime JavaScript errors,
+- 44px interactive targets.
+
+CI is triggered when a pull request is opened, synchronized, reopened or marked ready for review.

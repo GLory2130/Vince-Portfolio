@@ -66,7 +66,7 @@
         project: this.renderProject,
         gallery: this.renderGallery,
         speaking: this.renderSpeaking,
-        media: this.renderMedia,
+        appendix: this.renderAppendix,
       };
 
       if (renderers[page]) {
@@ -77,21 +77,25 @@
 
     afterRender(page) {
       if (page === 'projects') this.initProjectFilters();
-      if (page === 'media') this.initMediaFilters();
       if (page === 'gallery') this.initGallery();
       if (page === 'project') this.initProjectRedirect();
-      this.fillContactCTAs();
       VM.ui?.refreshIcons?.();
       VM.ui?.initReveal?.();
-      VM.ui?.initCounters?.();
-      VM.ui?.initTimeline?.();
-      VM.ui?.initTestimonials?.();
+      this.applyInitialHash();
     },
 
-    fillContactCTAs() {
-      document.querySelectorAll('#contact-ctas, .contact-ctas-slot').forEach(el => {
-        const compact = el.dataset.compact === 'true';
-        el.innerHTML = VM.layout.contactCTAs(compact);
+    /**
+     * Content is rendered after DOMContentLoaded, so the browser's native hash
+     * scroll runs before the target element exists. Re-apply it once here.
+     */
+    applyInitialHash() {
+      const id = decodeURIComponent(location.hash.slice(1));
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (!target) return;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       });
     },
 
@@ -99,303 +103,306 @@
       const s = S();
       const d = D();
       const img = VM.images || {};
-      const featured = VM.featuredProjects();
-      const moments = [];
-      const journeyThumbs = [
-        img.executive,
-        img.speakingBarrick,
-        img.speakingSuit,
-        img.conference,
-      ];
+      const featured = VM.featuredProjects().slice(0, 3);
 
       return `
-        <section id="hero" class="relative min-h-[92vh] flex items-center pt-20 overflow-hidden bg-white dark:bg-navy">
-          <div class="absolute top-1/4 right-0 w-[28rem] h-[28rem] bg-gold/5 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-          <div class="absolute bottom-0 left-0 w-72 h-72 bg-navy/5 dark:bg-gold/5 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-          <div class="max-w-8xl mx-auto px-6 py-14 md:py-20 w-full relative z-10 hero-shell">
-            <div class="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-              <div class="lg:col-span-6 hero-intro">
-                <img src="${esc(s.logo || img.logo || 'assets/images/vincelogo.png')}" alt="" class="reveal brand-logo brand-logo--hero hero-logo" width="1254" height="1254" decoding="async" aria-hidden="true">
-                <p class="reveal section-label mb-4 hero-eyebrow">${esc(d.hero.eyebrow)}</p>
-                <h1 class="reveal hero-title text-navy dark:text-white mb-4" style="--d:.05s">${esc(s.name)}</h1>
-                <p class="reveal hero-role text-lg md:text-xl text-navy/80 dark:text-zinc-200 mb-1 font-semibold" style="--d:.08s">${esc(d.hero.roles[0])}</p>
-                <p class="reveal hero-subtitle text-sm md:text-base text-muted dark:text-zinc-400 mb-5" style="--d:.1s">${esc(d.hero.roles[1])} · ${esc(d.hero.roles[2])}</p>
-                <p class="reveal hero-summary text-base md:text-lg text-muted dark:text-zinc-400 leading-relaxed max-w-xl mb-6 lg:mb-8" style="--d:.14s">${esc(d.hero.summary)}</p>
-
-                <div class="reveal hero-portrait-mobile flex justify-center mb-8 lg:hidden" style="--d:.12s">
-                  <div class="portrait-frame portrait-frame--mobile">
-                    <div class="portrait-frame__accent" aria-hidden="true"></div>
-                    <div class="portrait-frame__ring" aria-hidden="true"></div>
-                    <div class="portrait-frame__media">
-                      <img src="${esc(img.hero)}" alt="Professional portrait of Vicent Manila" width="960" height="1200" fetchpriority="high" decoding="async">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="reveal hero-actions mb-10" style="--d:.18s">
-                  <a href="${s.cv}" target="_blank" rel="noopener noreferrer" class="hero-btn hero-btn--primary btn-lift inline-flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-5 py-3 rounded-lg text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> View my CV</a>
-                  <div class="hero-btn-row">
-                    <a href="leadership.html" class="hero-btn hero-btn--secondary btn-lift inline-flex items-center justify-center gap-2 border border-black/[0.08] dark:border-white/10 text-ink dark:text-white font-semibold px-5 py-3 rounded-lg text-sm hover:border-gold transition-colors">View Experience</a>
-                    <a href="projects.html" class="hero-btn hero-btn--secondary btn-lift inline-flex items-center justify-center gap-2 border border-black/[0.08] dark:border-white/10 text-ink dark:text-white font-semibold px-5 py-3 rounded-lg text-sm hover:border-gold transition-colors">View Projects</a>
-                  </div>
-                  <a href="#contact" class="hero-btn hero-btn--link btn-lift inline-flex items-center gap-2 text-muted hover:text-gold font-medium px-1 py-2 text-sm transition-colors">Contact Vincent <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                </div>
-                <div class="reveal hero-metrics pt-7 border-t border-black/[0.06] dark:border-white/10" style="--d:.22s">
-                  ${d.hero.stats.map(st => `<div class="hero-metric"><p class="hero-metric__value text-2xl md:text-3xl font-bold text-navy dark:text-gold">${esc(st.value)}</p><p class="hero-metric__label text-xs text-muted mt-1 leading-snug">${esc(st.label)}</p></div>`).join('')}
-                </div>
+        <!-- ============ HERO — expansive ============ -->
+        <section class="vm-section--expansive vm-hero">
+          <div class="vm-container vm-hero__grid">
+            <div class="vm-hero__text">
+              <p class="vm-eyebrow vm-eyebrow--ruled">${esc(d.hero.eyebrow)}</p>
+              <h1 class="vm-display vm-hero__name">Vicent Manila</h1>
+              <p class="vm-hero__headline">${esc(d.hero.headline)}</p>
+              <p class="vm-lead vm-hero__summary">${esc(d.hero.summary)}</p>
+              <div class="vm-hero__actions">
+                <a class="vm-btn vm-btn--primary" href="projects.html">View Selected Work</a>
+                <a class="vm-btn vm-btn--secondary" href="#profile">Executive Profile</a>
               </div>
-              <div class="hidden lg:block lg:col-span-6 hero-portrait-desktop">
-                <div class="reveal flex justify-end" style="--d:.12s">
-                  <div class="portrait-frame">
-                    <div class="portrait-frame__accent" aria-hidden="true"></div>
-                    <div class="portrait-frame__ring" aria-hidden="true"></div>
-                    <div class="portrait-frame__media">
-                      <img src="${esc(img.hero)}" alt="Professional portrait of Vicent Manila" width="960" height="1200" decoding="async">
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <p class="vm-caption vm-hero__location">${esc(d.hero.location)}</p>
             </div>
+            <figure class="vm-hero__portrait">
+              <div class="vm-img-frame vm-img--portrait-exec vm-img--portrait-tight vm-img-frame--shadow">
+                <img class="vm-img" src="${esc(img.hero)}"
+                     alt="Vicent Manila, management consultant, Dar es Salaam"
+                     width="900" height="1125" fetchpriority="high" decoding="async"
+                     style="object-position:50% 8%">
+              </div>
+            </figure>
           </div>
         </section>
 
-        <section class="py-7 border-y border-black/[0.06] dark:border-white/10 bg-canvas dark:bg-navy-secondary/30">
-          <div class="max-w-8xl mx-auto px-6">
-            <p class="text-center text-xs font-semibold uppercase tracking-widest text-muted mb-5">Organizations Served</p>
-            <div class="flex flex-wrap justify-center gap-x-8 gap-y-3">
-              ${d.organizations.map(o => `<span class="text-sm font-medium text-muted dark:text-zinc-500">${esc(o)}</span>`).join('')}
-            </div>
+        <!-- ============ CREDIBILITY — compact ============ -->
+        <section class="vm-section--compact vm-section--subtle">
+          <div class="vm-container">
+            <h2 class="vm-visually-hidden">Professional standing</h2>
+            <ul class="vm-proof">
+              ${d.hero.proof.map(t => `<li class="vm-proof__item">${esc(t)}</li>`).join('')}
+            </ul>
           </div>
         </section>
 
-        <section id="about" class="section-pad bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start mb-12">
-              <div class="lg:col-span-5 order-1">
-                <div class="reveal portrait-frame portrait-frame--profile max-w-sm mx-auto lg:mx-0">
-                  <div class="portrait-frame__ring" aria-hidden="true"></div>
-                  <div class="portrait-frame__media">
-                    <img src="${esc(img.profile)}" alt="Vicent Manila professional portrait" width="834" height="1080" loading="lazy" decoding="async">
-                  </div>
-                </div>
-              </div>
-              <div class="lg:col-span-7 order-2">
-                <p class="reveal section-label mb-3">About</p>
-                <h2 class="reveal section-title text-navy dark:text-white mb-4" style="--d:.05s">Executive Profile</h2>
-                <p class="reveal text-lg text-muted dark:text-zinc-400 leading-relaxed max-w-2xl" style="--d:.1s">${esc(d.about.summary)}</p>
-              </div>
-            </div>
-            <div class="grid md:grid-cols-2 gap-6 mb-12">
-              <div class="reveal card-executive p-7 md:p-8 h-full" style="--d:.05s">
-                <div class="flex items-center gap-3 mb-4"><span class="w-10 h-10 flex items-center justify-center bg-gold/10 rounded-lg text-gold"><i data-lucide="compass" class="w-5 h-5"></i></span><h3 class="text-xl font-semibold text-navy dark:text-white">Leadership Philosophy</h3></div>
-                <p class="text-muted dark:text-zinc-400 leading-relaxed">${esc(d.about.philosophy)}</p>
-              </div>
-              <div class="reveal card-executive p-7 md:p-8 h-full" style="--d:.1s">
-                <div class="flex items-center gap-3 mb-4"><span class="w-10 h-10 flex items-center justify-center bg-gold/10 rounded-lg text-gold"><i data-lucide="target" class="w-5 h-5"></i></span><h3 class="text-xl font-semibold text-navy dark:text-white">Professional Mission</h3></div>
-                <p class="text-muted dark:text-zinc-400 leading-relaxed">${esc(d.about.mission)}</p>
-              </div>
-            </div>
-            <div class="mb-12">
-              <h3 class="reveal text-xl font-semibold text-navy dark:text-white mb-6">Core Expertise</h3>
-              <div class="grid sm:grid-cols-2 gap-4">
-                ${d.about.expertise.map((e, i) => `<div class="reveal card-executive expertise-card" style="--d:${delay(i)}"><h4 class="font-semibold text-navy dark:text-white mb-2">${esc(e.title)}</h4><p class="text-sm text-muted dark:text-zinc-400 leading-relaxed">${esc(e.desc)}</p></div>`).join('')}
-              </div>
-            </div>
-            <div class="grid lg:grid-cols-2 gap-6">
-              <div class="reveal card-executive p-7 md:p-8">
-                <h3 class="text-xl font-semibold text-navy dark:text-white mb-6">International Experience</h3>
-                <ul class="space-y-4">
-                  ${d.about.international.map(intl => `<li class="flex items-start gap-3 pb-4 border-b border-black/[0.06] dark:border-white/10 last:border-0 last:pb-0"><i data-lucide="map-pin" class="w-4 h-4 text-gold mt-1 shrink-0"></i><div><p class="font-semibold text-navy dark:text-white">${esc(intl.country)}</p><p class="text-sm text-muted">${esc(intl.role)}</p></div></li>`).join('')}
-                </ul>
-              </div>
-              <div class="reveal card-executive p-7 md:p-8 flex flex-col justify-between">
-                <div>
-                  <h3 class="text-xl font-semibold text-navy dark:text-white mb-4">Education</h3>
-                  <p class="font-semibold text-navy dark:text-white text-lg">${esc(d.about.education.school)}</p>
-                  <p class="text-sm text-gold font-medium mb-2">${esc(d.about.education.location)}</p>
-                  <p class="text-muted leading-relaxed">${esc(d.about.education.degree)}</p>
-                </div>
-                <div class="mt-8 pt-6 border-t border-black/[0.06] dark:border-white/10">
-                  <p class="text-sm text-muted flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-gold"></i> Based in ${esc(s.location)}</p>
-                </div>
-              </div>
-            </div>
+        <!-- ============ SELECTED WORK — expansive ============ -->
+        <section class="vm-section--expansive" id="work">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Selected Work</p>
+            <h2 class="vm-display-lg vm-mb-lg">Case studies in partnership<br>and organizational growth</h2>
+          </div>
+          <div class="vm-container vm-features">
+            ${featured.map((p, i) => VM.pages.projectFeature(p, i)).join('')}
+          </div>
+          <div class="vm-container vm-mt-lg">
+            <a class="vm-btn vm-btn--tertiary" href="projects.html">View all case studies</a>
           </div>
         </section>
 
-        <section id="experience" class="section-pad bg-white dark:bg-navy-secondary/20">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
-              <div><p class="reveal section-label mb-3">Career</p><h2 class="reveal section-title text-navy dark:text-white">Leadership Journey</h2></div>
-              <a href="leadership.html" class="reveal text-sm font-semibold text-gold hover:underline flex items-center gap-1">Full timeline <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        <!-- ============ EXTERNAL RESOURCES — visual editorial cards ============ -->
+        ${d.externalResources?.length ? `
+        <section class="vm-section vm-publications-section" aria-labelledby="home-external-resources-title">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Articles &amp; Events</p>
+            <div class="vm-publications-head">
+              <h2 id="home-external-resources-title" class="vm-display-md">External resources</h2>
+              <p>Selected public coverage and event records connected to the work featured in this portfolio.</p>
             </div>
-            <div class="relative max-w-3xl mx-auto" id="timeline">
-              <div class="timeline-line"></div>
-              <div class="timeline-progress" id="timeline-progress" style="height:0"></div>
-              ${d.experience.slice(0, 4).map((job, i) => `
-                <article class="reveal relative pl-10 pb-8 last:pb-0" style="--d:${delay(i, 0.08)}">
-                  <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-2 border-gold bg-white dark:bg-navy z-10"></div>
-                  <div class="card-executive p-5 sm:p-6">
-                    <div class="flex gap-4">
-                      ${journeyThumbs[i] ? `<div class="timeline-thumb hidden sm:block"><img src="${esc(journeyThumbs[i])}" alt="" width="72" height="72" loading="lazy" decoding="async"></div>` : ''}
-                      <div class="min-w-0 flex-1">
-                        <span class="text-xs font-semibold text-gold uppercase tracking-wider">${esc(job.period)}</span>
-                        <h3 class="text-lg font-semibold text-navy dark:text-white mt-1 mb-1">${esc(job.title)}</h3>
-                        <p class="text-sm font-medium text-muted mb-3">${esc(job.organization)} · ${esc(job.country)}</p>
-                        <p class="text-sm text-muted dark:text-zinc-400 leading-relaxed">${esc(job.overview)}</p>
-                      </div>
-                    </div>
-                  </div>
-                </article>`).join('')}
-            </div>
-          </div>
-        </section>
-
-        <section id="projects" class="section-pad bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
-              <div><p class="reveal section-label mb-3">Portfolio</p><h2 class="reveal section-title text-navy dark:text-white">Featured Projects</h2></div>
-              <a href="projects.html" class="reveal text-sm font-semibold text-gold hover:underline flex items-center gap-1">All projects <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-              ${featured.map((p, i) => this.projectCard(p, i)).join('')}
-            </div>
-          </div>
-        </section>
-
-        <section id="leadership-action" class="section-pad bg-white dark:bg-navy-secondary/20">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-              <div>
-                <p class="reveal section-label mb-3">Presence</p>
-                <h2 class="reveal section-title text-navy dark:text-white">Leadership in Action</h2>
-                <p class="reveal text-muted mt-3 max-w-xl">Moments from Vicent’s professional engagements, speaking sessions, partnerships, and leadership journey.</p>
-              </div>
-              <a href="gallery.html" class="reveal btn-lift inline-flex items-center gap-2 bg-navy dark:bg-gold text-white dark:text-navy text-sm font-semibold px-4 py-2.5 rounded-lg">View Full Gallery <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-            </div>
-            <div class="action-gallery">
-              ${(VM.galleryFeatured ? VM.galleryFeatured(6) : moments).map((m, i) => {
-                const src = m.thumb || m.src;
-                const alt = m.alt || m.caption || 'Vicent Manila';
-                const caption = m.title || m.caption || '';
-                return `
-                <figure class="reveal action-gallery__item" style="--d:${delay(i, 0.05)}">
-                  <a href="gallery.html" class="block w-full h-full" aria-label="${esc(alt)}">
-                    <img src="${esc(src)}" alt="${esc(alt)}" width="${m.width || 800}" height="${m.height || 1000}" loading="lazy" decoding="async">
-                    ${caption ? `<figcaption>${esc(caption)}</figcaption>` : ''}
+            <div class="vm-publication-grid">
+              ${d.externalResources.map((resource, i) => `
+                <article class="vm-publication">
+                  <a class="vm-publication__media vm-img-frame"
+                     href="${esc(resource.url)}"
+                     target="_blank" rel="noopener noreferrer"
+                     aria-label="${esc(resource.title)} — open external resource">
+                    <img class="vm-img"
+                         src="${esc(resource.image)}"
+                         alt="${esc(resource.imageAlt || resource.title)}"
+                         width="1200" height="750"
+                         loading="lazy" decoding="async"
+                         style="object-position:${imgPos(resource.imagePosition)}">
                   </a>
-                </figure>`;
-              }).join('')}
-            </div>
-          </div>
-        </section>
-
-        <section id="impact" class="section-pad bg-navy text-white">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="text-center max-w-2xl mx-auto mb-14">
-              <p class="reveal section-label mb-3">Impact</p>
-              <h2 class="reveal section-title text-white mb-4">Leadership Metrics</h2>
-              <p class="reveal text-white/60 text-lg">Measurable outcomes across organizations, partnerships, and communities.</p>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              ${d.impactStats.map((st, i) => `<div class="reveal stat-card text-center p-5 md:p-6" style="--d:${delay(i, 0.06)}"><i data-lucide="${st.icon}" class="w-5 h-5 text-gold mx-auto mb-3"></i><p class="text-3xl font-bold text-gold mb-1" data-count="${st.value}" data-suffix="${esc(st.suffix)}">0${esc(st.suffix)}</p><p class="text-xs text-white/50 leading-snug">${esc(st.label)}</p></div>`).join('')}
-            </div>
-          </div>
-        </section>
-
-        <section id="skills" class="skills-section" aria-labelledby="skills-heading">
-          <div class="skills-bg" aria-hidden="true">
-            <div class="skills-bg__glow skills-bg__glow--a"></div>
-            <div class="skills-bg__glow skills-bg__glow--b"></div>
-            <div class="skills-bg__dots"></div>
-          </div>
-          <div class="skills-inner max-w-8xl mx-auto px-6">
-            <div class="skills-header reveal text-center mx-auto">
-              <p class="section-label mb-4">Expertise</p>
-              <h2 id="skills-heading" class="section-title text-white mb-4">Core Competencies</h2>
-              <p class="skills-lead">A comprehensive blend of leadership, strategic thinking, business development, and operational excellence delivering measurable impact across Africa and beyond.</p>
-              <div class="skills-divider" aria-hidden="true"></div>
-            </div>
-            <div class="skills-grid">
-              ${(() => {
-                const icons = {
-                  'Leadership': 'users',
-                  'Business Development': 'trending-up',
-                  'Sales': 'shopping-cart',
-                  'Operations': 'cog',
-                  'CRM': 'share-2',
-                  'Management': 'briefcase',
-                  'International Relations': 'globe',
-                  'Strategy': 'target',
-                  'Communication': 'message-circle',
-                  'Languages': 'languages',
-                };
-                return Object.entries(d.skillCategories).map(([cat, skills], i) => {
-                  const featured = cat === 'Business Development';
-                  const icon = icons[cat] || 'sparkles';
-                  return `
-                  <article class="reveal skills-card${featured ? ' skills-card--featured' : ''}" style="--d:${delay(i, 0.04)}">
-                    <div class="skills-card__icon" aria-hidden="true"><i data-lucide="${icon}"></i></div>
-                    <h3 class="skills-card__title">${esc(cat)}</h3>
-                    <div class="skills-card__rule" aria-hidden="true"></div>
-                    <ul class="skills-card__tags">
-                      ${skills.map(sk => `<li><span class="skills-tag">${esc(sk)}</span></li>`).join('')}
-                    </ul>
-                  </article>`;
-                }).join('');
-              })()}
-            </div>
-            <p class="skills-closing reveal">Strategic expertise. <span>Measurable impact.</span> Lasting change.</p>
-          </div>
-        </section>
-
-        <section id="testimonials" class="section-pad bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="text-center mb-12">
-              <p class="reveal section-label mb-3">Endorsements</p>
-              <h2 class="reveal section-title text-navy dark:text-white">What Leaders Say</h2>
-            </div>
-            <div id="testimonial-carousel" class="max-w-3xl mx-auto relative overflow-hidden">
-              <div id="testimonial-track" class="flex transition-transform duration-500 ease-out">
-                ${d.testimonials.map(t => `
-                  <blockquote class="w-full shrink-0 card-executive p-6 sm:p-8 md:p-10">
-                    <i data-lucide="quote" class="w-8 h-8 text-gold/60 mb-4"></i>
-                    <p class="text-base sm:text-lg text-muted dark:text-zinc-300 leading-relaxed mb-8">"${esc(t.quote)}"</p>
-                    <footer class="flex items-center gap-4">
-                      <span class="avatar-initials" aria-hidden="true">${esc(t.initials)}</span>
-                      <div><cite class="font-semibold text-navy dark:text-white not-italic">${esc(t.name)}</cite><p class="text-sm text-muted">${esc(t.position)}, ${esc(t.organization)}</p></div>
-                    </footer>
-                  </blockquote>`).join('')}
-              </div>
-              <div class="flex items-center justify-center gap-4 mt-6">
-                <button type="button" id="testimonial-prev" class="w-11 h-11 rounded-full border border-black/[0.08] dark:border-white/10 flex items-center justify-center hover:bg-navy hover:text-white transition-colors" aria-label="Previous testimonial"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                <div id="testimonial-dots" class="flex gap-2" role="tablist" aria-label="Testimonial slides"></div>
-                <button type="button" id="testimonial-next" class="w-11 h-11 rounded-full border border-black/[0.08] dark:border-white/10 flex items-center justify-center hover:bg-navy hover:text-white transition-colors" aria-label="Next testimonial"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="insights" class="section-pad bg-white dark:bg-navy-secondary/20">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
-              <div><p class="reveal section-label mb-3">Insights</p><h2 class="reveal section-title text-navy dark:text-white">Media & Thought Leadership</h2></div>
-              <a href="media.html" class="reveal text-sm font-semibold text-gold hover:underline flex items-center gap-1">View all <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-            </div>
-            <div class="grid md:grid-cols-3 gap-6">
-              ${d.mediaItems.slice(0, 3).map((m, i) => `
-                <article class="reveal card-executive media-editorial" style="--d:${delay(i, 0.08)}">
-                  ${m.image ? `<div class="media-editorial__img"><img src="${esc(m.image)}" alt="${esc(m.title)}" width="800" height="500" loading="lazy" decoding="async"></div>` : ''}
-                  <div class="p-6 flex flex-col flex-1">
-                    <span class="text-xs font-semibold text-gold uppercase">${esc(m.type)}</span>
-                    <h3 class="text-lg font-semibold text-navy dark:text-white mt-2 mb-2">${esc(m.title)}</h3>
-                    <p class="text-sm text-muted leading-relaxed mb-3 flex-1">${esc(m.excerpt)}</p>
-                    <p class="text-xs text-muted">${esc(m.source)} · ${esc(m.date)}</p>
+                  <div class="vm-publication__body">
+                    <p class="vm-publication__meta">
+                      <span>${esc(resource.type || 'External resource')}</span>
+                      <span aria-hidden="true">·</span>
+                      <span>${esc(resource.source || '')}</span>
+                    </p>
+                    <h3 class="vm-publication__title">
+                      <a href="${esc(resource.url)}" target="_blank" rel="noopener noreferrer">
+                        ${esc(resource.title)}
+                      </a>
+                    </h3>
+                    <a class="vm-inline-external" href="${esc(resource.url)}"
+                       target="_blank" rel="noopener noreferrer">
+                      Open resource
+                      <i data-lucide="external-link" class="w-4 h-4" aria-hidden="true"></i>
+                    </a>
                   </div>
                 </article>`).join('')}
             </div>
+          </div>
+        </section>` : ''}
+
+        <!-- ============ EXECUTIVE PROFILE — editorial, no cards ============ -->
+        <section class="vm-section vm-section--subtle" id="profile">
+          <div class="vm-container vm-profile">
+            <div class="vm-profile__intro">
+              <p class="vm-eyebrow vm-eyebrow--ruled">Executive Profile</p>
+              <div class="vm-prose vm-profile__body"><p>${esc(d.about.summary)}</p></div>
+              <dl class="vm-facts">
+                <div class="vm-facts__row">
+                  <dt class="vm-eyebrow">Education</dt>
+                  <dd>${esc(d.about.education.degree)}<br>
+                      <span class="vm-caption">${esc(d.about.education.school)} · ${esc(d.about.education.period)}</span></dd>
+                </div>
+                <div class="vm-facts__row">
+                  <dt class="vm-eyebrow">Training</dt>
+                  <dd>${esc(d.about.training.title)}<br>
+                      <span class="vm-caption">${esc(d.about.training.provider)} · Completed ${esc(d.about.training.completed)}</span></dd>
+                </div>
+                <div class="vm-facts__row">
+                  <dt class="vm-eyebrow">Languages</dt>
+                  <dd>${d.about.languages.map(l => esc(l.name) + ' <span class="vm-caption">(' + esc(l.level) + ')</span>').join(' · ')}</dd>
+                </div>
+                <div class="vm-facts__row">
+                  <dt class="vm-eyebrow">Research</dt>
+                  <dd>${esc(d.about.research.title)}<br>
+                      <span class="vm-caption">${esc(d.about.research.period)}</span></dd>
+                </div>
+                <div class="vm-facts__row">
+                  <dt class="vm-eyebrow">Based in</dt>
+                  <dd>Dar es Salaam, Tanzania</dd>
+                </div>
+              </dl>
+            </div>
+            <figure class="vm-profile__figure">
+              <div class="vm-img-frame vm-img--portrait-ed vm-img--portrait-tight">
+                <img class="vm-img" src="${esc(img.profile)}"
+                     alt="Vicent Manila at a national leadership engagement"
+                     width="800" height="1066" loading="lazy" decoding="async"
+                     style="object-position:50% 8%">
+              </div>
+            </figure>
+          </div>
+        </section>
+
+        <!-- ============ LEADERSHIP PHILOSOPHY — signature editorial moment ============ -->
+        <section class="vm-section vm-philosophy">
+          <div class="vm-container vm-philosophy__grid">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Leadership Philosophy</p>
+            <blockquote class="vm-quote vm-quote--wide">${esc(d.about.philosophy)}</blockquote>
+          </div>
+        </section>
+
+        <!-- ============ EXPERTISE INDEX — numbered, not carded ============ -->
+        <section class="vm-section" id="expertise">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Areas of Expertise</p>
+            <h2 class="vm-display-md vm-mb-lg">Six domains of practice</h2>
+            <div class="vm-index">
+              ${d.about.expertise.map((e, i) => `
+                <div class="vm-index__item">
+                  <span class="vm-index__num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+                  <h3 class="vm-index__title">${esc(e.title)}</h3>
+                  <div class="vm-index__content">
+                    <p class="vm-index__desc">${esc(e.desc)}</p>
+                    <p class="vm-index__comps">${e.competencies.map(esc).join(' · ')}</p>
+                  </div>
+                </div>`).join('')}
+            </div>
+            <div class="vm-evidence-bridge">
+              <p>These areas of practice are supported by the case studies and primary-source documents published in this portfolio.</p>
+              <a class="vm-btn vm-btn--tertiary" href="projects.html">Explore the evidence behind the work</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ IMPACT — hairline row, no dark band, no counters ============ -->
+        <section class="vm-section vm-section--subtle">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Selected Impact</p>
+            <h2 class="vm-display-md vm-mb-lg">Measurable outcomes</h2>
+            <div class="vm-metrics">
+              ${d.impactStats.map(m => `
+                <div class="vm-metric">
+                  <span class="vm-metric__value">${esc(m.value)}</span>
+                  <span class="vm-metric__label">${esc(m.label)}</span>
+                  <span class="vm-metric__note">${esc(m.note)}</span>
+                </div>`).join('')}
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ CAREER — chronology preview ============ -->
+        <section class="vm-section" id="experience">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Leadership Journey</p>
+            <h2 class="vm-display-md vm-mb-lg">Career chronology</h2>
+            <div class="vm-chrono">
+              ${d.experience.slice(0, 4).map(r => VM.pages.chronoItem(r)).join('')}
+            </div>
+            <div class="vm-mt-lg">
+              <a class="vm-btn vm-btn--tertiary" href="leadership.html">View full leadership experience</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ INTERNATIONAL FOOTPRINT ============ -->
+        <section class="vm-section vm-section--subtle">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">International Footprint</p>
+            <h2 class="vm-display-md vm-mb-lg">Where the work has been</h2>
+            <div class="vm-index">
+              ${d.about.international.map(x => `
+                <div class="vm-geo">
+                  <h3 class="vm-geo__country">${esc(x.country)}</h3>
+                  <p class="vm-geo__role">${esc(x.role)}</p>
+                </div>`).join('')}
+            </div>
+            <div class="vm-partners">
+              <p class="vm-eyebrow">Organizations &amp; Partners</p>
+              <p class="vm-partners__list">${d.corporatePartners.map(x => esc(x.name)).concat(d.organizations.map(esc)).join(' · ')}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ PHOTOGRAPHY — immersive ============ -->
+        <section class="vm-section--expansive">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Leadership in Action</p>
+            <h2 class="vm-display-md vm-mb-lg">A visual archive</h2>
+          </div>
+          <div class="vm-container--wide vm-photo-grid">
+            ${[
+              { src: img.speakingForum, alt: 'Vicent Manila addressing a leadership forum' },
+              { src: img.partnership,   alt: 'Corporate partnership engagement' },
+              { src: img.conference,    alt: 'National conference delivery' },
+              { src: img.eventTeam,     alt: 'National leadership team' },
+            ].map((g) => `
+              <figure class="vm-img-frame vm-img--event vm-photo-grid__item">
+                <img class="vm-img" src="${esc(g.src)}" alt="${esc(g.alt)}"
+                     width="900" height="675" loading="lazy" decoding="async">
+              </figure>`).join('')}
+          </div>
+          <div class="vm-container vm-mt-lg">
+            <a class="vm-btn vm-btn--tertiary" href="gallery.html">View the full gallery</a>
+          </div>
+        </section>
+
+        <!-- ============ CONTACT — concise ============ -->
+        <section class="vm-section vm-section--navy" id="contact">
+          <div class="vm-container vm-contact">
+            <div>
+              <p class="vm-eyebrow vm-eyebrow--ruled">Contact</p>
+              <h2 class="vm-display-md">Discuss a partnership</h2>
+              <p class="vm-lead vm-mt-sm">Open to conversations on strategic partnerships, business development, and speaking engagements.</p>
+            </div>
+            <div class="vm-contact__actions">
+              <a class="vm-btn vm-btn--primary" href="${esc(s.contact.mailto)}">Email</a>
+              ${VM.pages.contactDirect(true)}
+              <a class="vm-btn vm-btn--secondary vm-btn--on-navy" href="${esc(s.linkedin)}" rel="noopener" target="_blank">LinkedIn</a>
+            </div>
+          </div>
+          <div class="vm-container">
+            <p class="vm-caption vm-contact__number">${esc(s.contact.phone)} · Dar es Salaam, Tanzania</p>
           </div>
         </section>`;
+    },
+
+    /**
+     * Direct-contact actions. WhatsApp and phone are the primary channels in
+     * this market, so they are surfaced as buttons rather than buried in text.
+     * @param {boolean} onNavy Use the inverse-surface button variant.
+     */
+    contactDirect(onNavy) {
+      const c = S().contact;
+      const v = onNavy ? ' vm-btn--on-navy' : '';
+      return `
+        <a class="vm-btn vm-btn--secondary${v}" href="${esc(c.whatsapp)}"
+           target="_blank" rel="noopener noreferrer"
+           aria-label="Message Vicent Manila on WhatsApp at ${esc(c.phone)}">
+          <i data-lucide="message-circle" class="w-4 h-4" aria-hidden="true"></i>
+          WhatsApp
+        </a>
+        <a class="vm-btn vm-btn--secondary${v}" href="${esc(c.tel)}"
+           aria-label="Call Vicent Manila on ${esc(c.phone)}">
+          <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+          Call
+        </a>`;
+    },
+
+    /** One chronology entry. Shared by home and leadership. No cards. */
+    chronoItem(r) {
+      return `
+        <article class="vm-chrono__item">
+          <p class="vm-chrono__period">${esc(r.period)}</p>
+          <div>
+            <h3 class="vm-chrono__role">${esc(r.title)}${r.current ? '<span class="vm-chrono__current">Current</span>' : ''}</h3>
+            <p class="vm-chrono__org">${esc(r.organization)} · ${esc(r.country)}</p>
+            ${r.mandate ? `<p class="vm-chrono__mandate">${esc(r.mandate)}</p>` : ''}
+            ${(r.outcomes && r.outcomes.length) ? `
+            <ul class="vm-chrono__outcomes">
+              ${r.outcomes.map(o => `<li>${esc(o)}</li>`).join('')}
+            </ul>` : ''}
+          </div>
+        </article>`;
     },
 
     projectCard(p, i) {
@@ -416,88 +423,153 @@
         </article>`;
     },
 
+    /** Case-study feature. Full-bleed image, then editorial text beneath. Not a card. */
+    /**
+     * @param {number} [level=3] Heading level. The projects index has no
+     *   intermediate h2, so it passes 2 to keep the outline unbroken.
+     */
+    projectFeature(p, i, level) {
+      const pos = imgPos(p.imagePosition);
+      const h = level === 2 ? 'h2' : 'h3';
+      return `
+        <article class="vm-feature">
+          <a class="vm-feature__media vm-img-frame vm-img--case-hero"
+             href="project.html?slug=${encodeURIComponent(p.slug)}"
+             aria-label="${esc(p.title)} — view case study">
+            <img class="vm-img" src="${esc(p.image)}" alt="${esc(p.title)}"
+                 width="1100" height="733" loading="lazy" decoding="async"
+                 style="object-position:${pos}">
+          </a>
+          <div class="vm-feature__body">
+            <p class="vm-eyebrow">
+              <span class="vm-feature__num">${String(i + 1).padStart(2, '0')}</span>
+              ${esc(p.category_label)}
+            </p>
+            <${h} class="vm-feature__title">
+              <a href="project.html?slug=${encodeURIComponent(p.slug)}">${esc(p.title)}</a>
+            </${h}>
+            <p class="vm-feature__summary">${esc(p.summary)}</p>
+            ${p.results && p.results.length
+              ? `<p class="vm-feature__outcome">${esc(p.results[0])}</p>` : ''}
+            <a class="vm-btn vm-btn--tertiary" href="project.html?slug=${encodeURIComponent(p.slug)}">View Case Study</a>
+          </div>
+        </article>`;
+    },
+
+    /**
+     * Leadership page. Thesis → chronology → outcomes → footprint → CTA.
+     * The former dark six-counter band and nested journey panels are removed.
+     */
     renderLeadership() {
       const d = D();
       return `
-        <section class="pt-32 pb-12 bg-white dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <p class="reveal section-label mb-3">Leadership</p>
-            <h1 class="reveal section-title text-navy dark:text-white mb-4">Leadership Journey</h1>
-            <p class="reveal text-lg text-muted max-w-2xl">${esc(d.about.philosophy)}</p>
+        <section class="vm-section--expansive vm-page-head">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Leadership</p>
+            <h1 class="vm-display">Leadership<br>Experience</h1>
+            <p class="vm-lead vm-mt-md">${esc(d.about.mission)}</p>
           </div>
         </section>
-        <section class="py-16 bg-navy">
-          <div class="max-w-8xl mx-auto px-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            ${d.impactStats.map(st => `<div class="stat-card text-center p-5"><p class="text-2xl font-bold text-gold" data-count="${st.value}" data-suffix="${esc(st.suffix)}">0${esc(st.suffix)}</p><p class="text-xs text-white/50 mt-1">${esc(st.label)}</p></div>`).join('')}
+
+        <section class="vm-section vm-philosophy">
+          <div class="vm-container vm-philosophy__grid">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Leadership Philosophy</p>
+            <blockquote class="vm-quote vm-quote--wide">${esc(d.about.philosophy)}</blockquote>
           </div>
         </section>
-        <section class="py-24 bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <h2 class="text-2xl font-bold text-navy dark:text-white mb-12">Complete Timeline</h2>
-            <div class="relative max-w-3xl mx-auto" id="timeline">
-              <div class="timeline-line"></div>
-              <div class="timeline-progress" id="timeline-progress"></div>
-              ${d.experience.map((job, i) => `
-                <article class="reveal relative pl-10 pb-10 last:pb-0" style="--d:${delay(i)}">
-                  <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-2 border-gold bg-canvas dark:bg-navy z-10"></div>
-                  <div class="card-executive p-8">
-                    <div class="flex flex-wrap items-center gap-3 mb-3">
-                      <span class="text-xs font-semibold text-gold uppercase tracking-wider px-2 py-1 bg-gold/10 rounded">${esc(job.period)}</span>
-                      <span class="text-xs text-muted flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${esc(job.country)}</span>
-                    </div>
-                    <h3 class="text-xl font-semibold text-navy dark:text-white mb-1">${esc(job.title)}</h3>
-                    <p class="text-sm font-medium text-muted mb-4">${esc(job.organization)}</p>
-                    <p class="text-sm text-muted leading-relaxed mb-6">${esc(job.overview)}</p>
-                    <div class="grid md:grid-cols-2 gap-6 mb-6">
-                      <div><h4 class="text-xs font-semibold uppercase tracking-wider text-muted mb-3">Responsibilities</h4><ul class="space-y-2">${job.responsibilities.map(r => `<li class="text-sm text-muted flex gap-2"><span class="text-gold">·</span> ${esc(r)}</li>`).join('')}</ul></div>
-                      <div><h4 class="text-xs font-semibold uppercase tracking-wider text-gold mb-3">Achievements</h4><ul class="space-y-2">${job.achievements.map(a => `<li class="text-sm text-muted flex gap-2"><span class="text-gold">·</span> ${esc(a)}</li>`).join('')}</ul></div>
-                    </div>
-                    <div class="pt-4 border-t border-black/[0.06] dark:border-white/10">
-                      <p class="text-sm text-muted mb-3"><strong class="text-navy dark:text-white">Impact:</strong> ${esc(job.impact)}</p>
-                      <div class="flex flex-wrap gap-2">${job.skills.map(sk => `<span class="text-xs px-2.5 py-1 rounded-full bg-canvas dark:bg-navy border border-black/[0.06] dark:border-white/10 text-muted">${esc(sk)}</span>`).join('')}</div>
-                    </div>
-                  </div>
-                </article>`).join('')}
+
+        <section class="vm-section vm-section--subtle">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Selected Impact</p>
+            <h2 class="vm-display-md vm-mb-lg">Measurable outcomes</h2>
+            <div class="vm-metrics">
+              ${d.impactStats.map(m => `
+                <div class="vm-metric">
+                  <span class="vm-metric__value">${esc(m.value)}</span>
+                  <span class="vm-metric__label">${esc(m.label)}</span>
+                  <span class="vm-metric__note">${esc(m.note)}</span>
+                </div>`).join('')}
             </div>
           </div>
         </section>
-        <section class="py-24 bg-white dark:bg-navy-secondary/20">
-          <div class="max-w-8xl mx-auto px-6">
-            <h2 class="text-2xl font-bold text-navy dark:text-white mb-8">Organizations Served</h2>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              ${d.organizations.map(org => `<div class="card-executive p-6 text-center"><i data-lucide="building-2" class="w-6 h-6 text-gold mx-auto mb-3"></i><p class="font-semibold text-navy dark:text-white text-sm">${esc(org)}</p></div>`).join('')}
+
+        <section class="vm-section">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Career Chronology</p>
+            <h2 class="vm-display-md vm-mb-lg">Roles held</h2>
+            <div class="vm-chrono">
+              ${d.experience.map(r => VM.pages.chronoItem(r)).join('')}
             </div>
           </div>
         </section>
-        <section class="py-24 bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <h2 class="text-2xl font-bold text-navy dark:text-white mb-8">Global Contributions</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-              ${d.about.international.map(intl => `<div class="card-executive p-8"><h3 class="text-xl font-semibold text-navy dark:text-white mb-2">${esc(intl.country)}</h3><p class="text-muted">${esc(intl.role)}</p></div>`).join('')}
+
+        <section class="vm-section vm-section--subtle">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">International Footprint</p>
+            <h2 class="vm-display-md vm-mb-lg">Where the work has been</h2>
+            <div class="vm-index">
+              ${d.about.international.map(x => `
+                <div class="vm-geo">
+                  <h3 class="vm-geo__country">${esc(x.country)}</h3>
+                  <p class="vm-geo__role">${esc(x.role)}</p>
+                </div>`).join('')}
+            </div>
+            <div class="vm-partners">
+              <p class="vm-eyebrow">Organizations &amp; Partners</p>
+              <p class="vm-partners__list">${d.corporatePartners.map(x => esc(x.name)).concat(d.organizations.map(esc)).join(' · ')}</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="vm-section--compact vm-section--navy">
+          <div class="vm-container vm-contact">
+            <div>
+              <h2 class="vm-display-md">Discuss a partnership</h2>
+            </div>
+            <div class="vm-contact__actions">
+              <a class="vm-btn vm-btn--primary" href="index.html#contact">Get in Touch</a>
+              ${VM.pages.contactDirect(true)}
+              <a class="vm-btn vm-btn--secondary vm-btn--on-navy" href="projects.html">View Selected Work</a>
             </div>
           </div>
         </section>`;
     },
 
+    /**
+     * Selected Work index. Editorial case-study list, not a card grid.
+     * Filters expose aria-pressed and announce results via a live region.
+     */
     renderProjects() {
       const d = D();
       const filters = Object.entries(d.projectCategories).map(([key, label]) =>
-        `<button type="button" data-filter="${esc(key)}" class="filter-btn text-sm font-medium px-4 py-2 rounded-lg border transition-colors ${key === 'all' ? 'is-active' : ''}">${esc(label)}</button>`
+        `<button type="button" data-filter="${esc(key)}" class="vm-filter${key === 'all' ? ' is-active' : ''}" aria-pressed="${key === 'all'}">${esc(label)}</button>`
       ).join('');
 
       return `
-        <section class="pt-32 pb-12 bg-white dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <p class="reveal section-label mb-3">Portfolio</p>
-            <h1 class="reveal section-title text-navy dark:text-white mb-4">All Projects</h1>
-            <p class="reveal text-lg text-muted max-w-2xl leading-relaxed">Strategic initiatives across business development, international partnerships, leadership, and organizational growth.</p>
+        <section class="vm-page-head vm-section--compact">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Selected Work</p>
+            <h1 class="vm-display">Case Studies</h1>
+            <p class="vm-lead vm-mt-md">Selected assignments and leadership work presented as case studies, with supporting documents linked where public evidence is available.</p>
           </div>
         </section>
-        <section class="pb-24">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="reveal flex flex-wrap gap-2 mb-10" id="project-filters">${filters}</div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch" id="projects-grid">
-              ${d.projects.map((p, i) => `<div class="project-item h-full" data-category="${esc(p.category)}">${this.projectCard(p, i)}</div>`).join('')}
+
+        <section class="vm-section">
+          <div class="vm-container">
+            <div class="vm-filters" id="project-filters" role="group" aria-label="Filter case studies by category">${filters}</div>
+            <p class="vm-visually-hidden" id="filter-status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="vm-container vm-features vm-mt-lg" id="projects-grid">
+            ${d.projects.map((p, i) => `<div class="vm-project-item" data-category="${esc(p.category)}">${this.projectFeature(p, i, 2)}</div>`).join('')}
+          </div>
+        </section>
+
+        <section class="vm-section--compact vm-section--navy">
+          <div class="vm-container vm-contact">
+            <div><h2 class="vm-display-md">Discuss a partnership</h2></div>
+            <div class="vm-contact__actions">
+              <a class="vm-btn vm-btn--primary" href="index.html#contact">Get in Touch</a>
+              ${VM.pages.contactDirect(true)}
             </div>
           </div>
         </section>`;
@@ -545,7 +617,7 @@
               <button type="button" class="lightbox__btn lightbox__prev" id="project-lightbox-prev" aria-label="Previous image"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
               <button type="button" class="lightbox__btn lightbox__next" id="project-lightbox-next" aria-label="Next image"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
               <figure class="lightbox__figure">
-                <img id="project-lightbox-image" src="" alt="">
+                <img id="project-lightbox-image" alt="">
                 <figcaption class="lightbox__caption">
                   <h3 id="project-lightbox-title"></h3>
                   <p id="project-lightbox-caption"></p>
@@ -606,18 +678,31 @@
         <section class="project-overview-section" aria-label="Project case study">
           <div class="project-content project-content--prose max-w-8xl mx-auto px-6">
             <div class="prose-cs project-case">
-              <h3>Overview</h3>
+              <h2>Overview</h2>
               <p>${esc(project.overview)}</p>
-              <h3>Challenge</h3>
+              <h2>Challenge</h2>
               <p>${esc(project.challenge)}</p>
-              <h3>Objectives</h3>
+              <h2>Objectives</h2>
               <ul>${project.objectives.map(o => `<li>${esc(o)}</li>`).join('')}</ul>
-              <h3>Role</h3>
+              <h2>Role</h2>
               <p>${esc(project.role)}</p>
-              <h3>Strategy</h3>
+              <h2>Strategy</h2>
               <p>${esc(project.strategy)}</p>
-              <h3>Execution</h3>
+              <h2>Execution</h2>
               <p>${esc(project.execution)}</p>
+              ${project.resources?.length ? `
+                <h2>Evidence &amp; Resources</h2>
+                <div class="vm-project-resources" aria-label="Supporting evidence">
+                  ${project.resources.map(resource => `
+                    <a class="vm-resource-link" href="${esc(resource.href)}"
+                       target="_blank" rel="noopener noreferrer">
+                      <span>
+                        <strong>${esc(resource.label)}</strong>
+                        <small>${esc(resource.type || 'Supporting resource')}</small>
+                      </span>
+                      <i data-lucide="external-link" class="w-4 h-4" aria-hidden="true"></i>
+                    </a>`).join('')}
+                </div>` : ''}
             </div>
           </div>
         </section>
@@ -726,23 +811,25 @@
 
     renderGallery() {
       const filters = Object.entries(VM.galleryFilters || { all: 'All' }).map(([key, label]) =>
-        `<button type="button" data-gallery-filter="${esc(key)}" class="gallery-filter-btn text-sm font-medium px-4 py-2 rounded-lg border transition-colors whitespace-nowrap ${key === 'all' ? 'is-active' : ''}" aria-pressed="${key === 'all' ? 'true' : 'false'}">${esc(label)}</button>`
+        `<button type="button" data-gallery-filter="${esc(key)}" class="vm-filter gallery-filter-btn${key === 'all' ? ' is-active' : ''}" aria-pressed="${key === 'all' ? 'true' : 'false'}">${esc(label)}</button>`
       ).join('');
 
       return `
-        <section class="pt-28 pb-10 bg-white dark:bg-navy" id="gallery-page">
-          <div class="max-w-8xl mx-auto px-6">
-            <p class="reveal section-label mb-3">Leadership in Action</p>
-            <h1 class="reveal section-title text-navy dark:text-white mb-4">Gallery</h1>
-            <p class="reveal text-base md:text-lg text-muted max-w-2xl leading-relaxed">A visual collection of Vicent Manila’s leadership engagements, partnerships, speaking sessions, professional milestones, and international collaborations.</p>
+        <section class="vm-page-head vm-section--compact" id="gallery-page">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Leadership in Action</p>
+            <h1 class="vm-display">Gallery</h1>
+            <p class="vm-lead vm-mt-md">A visual archive of leadership engagements, corporate partnerships, speaking sessions, and international collaboration across East Africa.</p>
           </div>
         </section>
-        <section class="pb-20 md:pb-24 bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="reveal gallery-filters mb-8" id="gallery-filters" role="toolbar" aria-label="Gallery categories">${filters}</div>
-            <p id="gallery-count" class="text-sm text-muted mb-6" aria-live="polite"></p>
+        <section class="vm-section">
+          <div class="vm-container">
+            <div class="vm-filters" id="gallery-filters" role="group" aria-label="Gallery categories">${filters}</div>
+            <p id="gallery-count" class="vm-caption vm-mt-md" aria-live="polite"></p>
+          </div>
+          <div class="vm-container--wide vm-mt-lg">
             <div class="gallery-masonry" id="gallery-grid"></div>
-            <p id="gallery-empty" class="hidden text-center text-muted py-16">No images in this category.</p>
+            <p id="gallery-empty" class="hidden vm-caption" style="text-align:center;padding:4rem 0">No images in this category.</p>
           </div>
         </section>
         <div id="gallery-lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Image viewer">
@@ -751,9 +838,9 @@
             <button type="button" class="lightbox__btn lightbox__prev" id="lightbox-prev" aria-label="Previous image"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
             <button type="button" class="lightbox__btn lightbox__next" id="lightbox-next" aria-label="Next image"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
             <figure class="lightbox__figure">
-              <img id="lightbox-image" src="" alt="">
+              <img id="lightbox-image" alt="">
               <figcaption class="lightbox__caption">
-                <h3 id="lightbox-title"></h3>
+                <h2 id="lightbox-title"></h2>
                 <p id="lightbox-caption"></p>
               </figcaption>
               <p class="lightbox__counter" id="lightbox-counter" aria-live="polite"></p>
@@ -795,13 +882,13 @@
           return `
             <figure class="gallery-card" data-gallery-index="${idx}" tabindex="0" role="button" aria-label="View ${esc(item.alt)}">
               <div class="gallery-card__media">
-                <img src="${esc(thumb)}" alt="${esc(item.alt)}" width="${item.width || ''}" height="${item.height || ''}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+                <img src="${esc(thumb)}" alt="${esc(item.alt)}" class="${item.rotate180 ? 'image-rotate-180' : ''}" width="${item.width || ''}" height="${item.height || ''}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
                 <div class="gallery-card__overlay" aria-hidden="true"><span>${esc((VM.galleryFilters && VM.galleryFilters[item.category]) || item.category)}</span></div>
               </div>
               <figcaption class="gallery-card__meta">
-                <span class="text-xs font-semibold text-gold uppercase tracking-wider">${esc((VM.galleryFilters && VM.galleryFilters[item.category]) || item.category)}</span>
-                <h3>${esc(item.title)}</h3>
-                <p>${esc(item.caption)}</p>
+                <span class="vm-eyebrow">${esc((VM.galleryFilters && VM.galleryFilters[item.category]) || item.category)}</span>
+                <p class="gallery-card__title">${esc(item.title)}</p>
+                <p class="gallery-card__caption">${esc(item.caption)}</p>
               </figcaption>
             </figure>`;
         }).join('');
@@ -831,6 +918,7 @@
         if (imgEl) {
           imgEl.src = item.src;
           imgEl.alt = item.alt;
+          imgEl.classList.toggle('image-rotate-180', Boolean(item.rotate180));
         }
         if (titleEl) titleEl.textContent = item.title || '';
         if (captionEl) captionEl.textContent = item.caption || '';
@@ -896,141 +984,260 @@
       render();
     },
 
+    /**
+     * Speaking page. Positioning -> topics -> engagements -> photography -> booking.
+     * Topics are an editorial index; engagements are hairline rows, not cards.
+     */
     renderSpeaking() {
       const s = S();
       const d = D();
+      const img = VM.images || {};
       const speakingGallery = (VM.galleryImages || []).filter(g => g.category === 'speaking');
-      const galleryItems = speakingGallery.length ? speakingGallery.slice(0, 3) : (VM.galleryFeatured ? VM.galleryFeatured(3) : []);
+      const galleryItems = speakingGallery.length
+        ? speakingGallery.slice(0, 3)
+        : (VM.galleryFeatured ? VM.galleryFeatured(3) : []);
 
       return `
-        <section class="pt-32 pb-12 bg-white dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <p class="reveal section-label mb-3">Speaking</p>
-            <h1 class="reveal section-title text-navy dark:text-white mb-4">Speaking & Engagements</h1>
-            <p class="reveal text-lg text-muted max-w-2xl">Keynotes, panel discussions, and workshops on youth leadership, strategic partnerships, and international development.</p>
+        <section class="vm-page-head vm-section--compact">
+          <div class="vm-container vm-hero__grid">
+            <div>
+              <p class="vm-eyebrow vm-eyebrow--ruled">Speaking</p>
+              <h1 class="vm-display">Speaking &amp;<br>Facilitation</h1>
+              <p class="vm-lead vm-mt-md">Conference design, facilitation and executive communication drawn from directing national organizations in two countries.</p>
+              <div class="vm-hero__actions">
+                <a class="vm-btn vm-btn--primary" href="#booking">Book a Speaking Engagement</a>
+              </div>
+            </div>
+            <figure class="vm-hero__portrait">
+              <div class="vm-img-frame vm-img--portrait-ed vm-img-frame--shadow">
+                <img class="vm-img" src="${esc(img.speakingForum)}"
+                     alt="Vicent Manila speaking at a leadership forum"
+                     width="800" height="1066" fetchpriority="high" decoding="async"
+                     style="object-position:50% 15%">
+              </div>
+            </figure>
           </div>
         </section>
-        <section class="py-16 bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <h2 class="text-2xl font-bold text-navy dark:text-white mb-8">Speaking Topics</h2>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              ${d.speakingTopics.map((topic, i) => `<div class="reveal card-executive p-6 flex items-start gap-3" style="--d:${delay(i)}"><i data-lucide="mic" class="w-5 h-5 text-gold shrink-0 mt-0.5"></i><p class="font-medium text-navy dark:text-white">${esc(topic)}</p></div>`).join('')}
+
+        ${d.featuredEvent ? `
+        <section class="vm-section vm-section--subtle" aria-labelledby="featured-event-title">
+          <div class="vm-container vm-event-feature">
+            <figure class="vm-event-feature__media vm-img-frame">
+              <img class="vm-img" src="${esc(d.featuredEvent.image)}"
+                   alt="The Men's Circle event poster featuring host Vicent Manila"
+                   width="864" height="1080" loading="lazy" decoding="async">
+            </figure>
+            <div class="vm-event-feature__body">
+              <p class="vm-eyebrow vm-eyebrow--ruled">${esc(d.featuredEvent.eyebrow)}</p>
+              <h2 id="featured-event-title" class="vm-display-md">${esc(d.featuredEvent.title)}</h2>
+              <p class="vm-lead vm-mt-md">${esc(d.featuredEvent.summary)}</p>
+              <dl class="vm-event-meta">
+                <div><dt>Role</dt><dd>${esc(d.featuredEvent.role)}</dd></div>
+                <div><dt>Date</dt><dd>${esc(d.featuredEvent.date)} · ${esc(d.featuredEvent.time)}</dd></div>
+                <div><dt>Format</dt><dd>${esc(d.featuredEvent.format)}</dd></div>
+                <div><dt>Platform</dt><dd>${esc(d.featuredEvent.organization)}</dd></div>
+              </dl>
+              <a class="vm-btn vm-btn--secondary vm-external-link" href="${esc(d.featuredEvent.url)}"
+                 target="_blank" rel="noopener noreferrer">
+                ${esc(d.featuredEvent.linkLabel)}
+                <i data-lucide="external-link" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
             </div>
           </div>
-        </section>
-        <section class="py-16 bg-white dark:bg-navy-secondary/20">
-          <div class="max-w-8xl mx-auto px-6">
-            <h2 class="text-2xl font-bold text-navy dark:text-white mb-8">Past Engagements</h2>
-            <div class="space-y-4">
-              ${d.speakingEngagements.map(eng => `
-                <div class="reveal card-executive p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div><span class="text-xs font-semibold text-gold uppercase">${esc(eng.type)}</span><h3 class="text-lg font-semibold text-navy dark:text-white mt-1">${esc(eng.title)}</h3><p class="text-sm text-muted">${esc(eng.event)}</p></div>
-                  <div class="text-sm text-muted shrink-0 flex items-center gap-4"><span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${esc(eng.location)}</span><span>${esc(eng.date)}</span></div>
+        </section>` : ''}
+
+        <section class="vm-section">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Topics</p>
+            <h2 class="vm-display-md vm-mb-lg">What I speak about</h2>
+            <div class="vm-index">
+              ${d.speakingTopics.map((t, i) => `
+                <div class="vm-index__item">
+                  <span class="vm-index__num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+                  <h3 class="vm-index__title">${esc(t.title)}</h3>
+                  <div><p class="vm-index__desc">${esc(t.desc)}</p></div>
                 </div>`).join('')}
             </div>
           </div>
         </section>
-        <section class="py-16 bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6 grid lg:grid-cols-2 gap-8">
-            <div class="card-executive p-8">
-              <h2 class="text-xl font-bold text-navy dark:text-white mb-4">Media Kit</h2>
-              <p class="text-muted leading-relaxed mb-6">Download professional biography, headshots, speaking topics, and brand assets for event organizers and media inquiries.</p>
-              <a href="${s.cv}" target="_blank" rel="noopener noreferrer" class="btn-lift inline-flex items-center gap-2 bg-gold text-navy font-semibold px-5 py-2.5 rounded-lg text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> View my CV</a>
-            </div>
-            <div class="card-executive p-8" id="booking">
-              <h2 class="text-xl font-bold text-navy dark:text-white mb-4">Book a Speaking Engagement</h2>
-              <p class="text-muted leading-relaxed mb-6">Reach out directly to discuss keynotes, panels, or workshops for your event.</p>
-              <div class="contact-ctas-slot" data-compact="true"></div>
+
+        <section class="vm-section vm-section--subtle">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Selected Engagements</p>
+            <h2 class="vm-display-md vm-mb-lg">Conferences and platforms delivered</h2>
+            <div class="vm-chrono">
+              ${d.speakingEngagements.map(e => `
+                <article class="vm-chrono__item">
+                  <p class="vm-chrono__period">${esc(e.date)}</p>
+                  <div>
+                    <h3 class="vm-chrono__role">${esc(e.title)}</h3>
+                    <p class="vm-chrono__org">${esc(e.role)} · ${esc(e.organization)} · ${esc(e.location)}</p>
+                    ${e.note ? `<p class="vm-chrono__mandate">${esc(e.note)}</p>` : ''}
+                    ${e.url ? `<a class="vm-inline-external" href="${esc(e.url)}" target="_blank" rel="noopener noreferrer">
+                      View external event page <i data-lucide="external-link" class="w-4 h-4" aria-hidden="true"></i>
+                    </a>` : ''}
+                  </div>
+                </article>`).join('')}
             </div>
           </div>
         </section>
-        <section class="py-16 bg-white dark:bg-navy-secondary/20">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="flex items-center justify-between mb-8">
-              <h2 class="text-2xl font-bold text-navy dark:text-white">Speaking Gallery</h2>
-              <a href="gallery.html" class="text-sm font-semibold text-gold hover:underline">Full gallery →</a>
+
+        ${d.externalResources?.length ? `
+        <section class="vm-section" aria-labelledby="external-resources-title">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Articles &amp; Newsletters</p>
+            <h2 id="external-resources-title" class="vm-display-md vm-mb-lg">External resources</h2>
+            <div class="vm-resource-list">
+              ${d.externalResources.map(resource => `
+                <a class="vm-resource-link" href="${esc(resource.url)}"
+                   target="_blank" rel="noopener noreferrer">
+                  <span>
+                    <strong>${esc(resource.title)}</strong>
+                    <small>${esc(resource.source || resource.type || 'External resource')}</small>
+                  </span>
+                  <i data-lucide="external-link" class="w-4 h-4" aria-hidden="true"></i>
+                </a>`).join('')}
             </div>
-            <div class="grid md:grid-cols-3 gap-4">
-              ${galleryItems.map(item => `<figure class="card-executive overflow-hidden"><img src="${esc(item.thumb || item.src)}" alt="${esc(item.alt || item.title)}" class="w-full aspect-[4/5] object-cover" width="${item.width || ''}" height="${item.height || ''}" loading="lazy" decoding="async"><figcaption class="p-4"><p class="font-semibold text-navy dark:text-white text-sm">${esc(item.title)}</p><p class="text-xs text-muted">${esc(item.caption || '')}</p></figcaption></figure>`).join('')}
+          </div>
+        </section>` : ''}
+
+        <section class="vm-section--expansive">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">On Stage</p>
+            <h2 class="vm-display-md vm-mb-lg">Speaking photography</h2>
+          </div>
+          <div class="vm-container--wide vm-photo-grid">
+            ${galleryItems.map(item => `
+              <figure class="vm-img-frame vm-img--event">
+                <img class="vm-img${item.rotate180 ? ' image-rotate-180' : ''}"
+                     src="${esc(item.thumb || item.src)}"
+                     alt="${esc(item.alt || item.title)}"
+                     width="900" height="675" loading="lazy" decoding="async">
+              </figure>`).join('')}
+          </div>
+          <div class="vm-container vm-mt-lg">
+            <a class="vm-btn vm-btn--tertiary" href="gallery.html">View the full gallery</a>
+          </div>
+        </section>
+
+        <section class="vm-section vm-section--navy" id="booking">
+          <div class="vm-container vm-contact">
+            <div>
+              <p class="vm-eyebrow vm-eyebrow--ruled">Booking</p>
+              <h2 class="vm-display-md">Book a speaking engagement</h2>
+              <p class="vm-lead vm-mt-sm">Available for keynotes, panels, facilitation and workshops.</p>
+            </div>
+            <div class="vm-contact__actions">
+              <a class="vm-btn vm-btn--primary" href="${esc(s.contact.mailto)}">Email</a>
+              ${VM.pages.contactDirect(true)}
+              <a class="vm-btn vm-btn--secondary vm-btn--on-navy" href="${esc(s.cv)}" target="_blank" rel="noopener noreferrer">Download CV</a>
             </div>
           </div>
         </section>`;
     },
 
-    renderMedia() {
+    /**
+     * Appendix. Primary-source evidence, presented as a document index.
+     * Downloads are explicit about format and weight so nothing is a surprise.
+     */
+    renderAppendix() {
       const s = S();
       const d = D();
-      const icons = { Video: 'play-circle', Podcast: 'headphones', Interview: 'mic' };
-      const filters = Object.entries(d.mediaFilters).map(([key, label]) =>
-        `<button type="button" data-media-filter="${esc(key)}" class="media-filter-btn text-sm px-4 py-2 rounded-lg transition-colors ${key === 'all' ? 'is-active' : ''}">${esc(label)}</button>`
-      ).join('');
+      const a = d.appendix;
 
       return `
-        <section class="pt-32 pb-12 bg-white dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6">
-            <p class="reveal section-label mb-3">Media</p>
-            <h1 class="reveal section-title text-navy dark:text-white mb-4">Press & Media</h1>
-            <p class="reveal text-lg text-muted max-w-2xl">Articles, interviews, press features, and thought leadership on youth development and strategic partnerships.</p>
+        <section class="vm-page-head vm-section--compact">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Appendix</p>
+            <h1 class="vm-display">Evidence &amp;<br>Documentation</h1>
+            <p class="vm-lead vm-mt-md">${esc(a.intro)}</p>
           </div>
         </section>
-        <section class="pb-24">
-          <div class="max-w-8xl mx-auto px-6">
-            <div class="flex flex-wrap gap-2 mb-10" id="media-filters">${filters}</div>
-            <div class="grid md:grid-cols-2 gap-6" id="media-grid">
-              ${d.mediaItems.map(m => {
-                const icon = icons[m.type] || 'file-text';
-                return `<article class="media-item reveal card-executive overflow-hidden" data-type="${esc(m.type)}">
-                  ${m.image ? `<div class="media-editorial__img"><img src="${esc(m.image)}" alt="${esc(m.title)}" width="800" height="500" loading="lazy" decoding="async"></div>` : ''}
-                  <div class="p-6 md:p-8">
-                    <div class="flex items-center gap-3 mb-4"><i data-lucide="${icon}" class="w-5 h-5 text-gold"></i><span class="text-xs font-semibold text-gold uppercase">${esc(m.type)}</span><span class="text-xs text-muted ml-auto">${esc(m.date)}</span></div>
-                    <h2 class="text-xl font-semibold text-navy dark:text-white mb-2">${esc(m.title)}</h2>
-                    <p class="text-sm text-muted mb-3">${esc(m.source)}</p>
-                    <p class="text-muted leading-relaxed">${esc(m.excerpt)}</p>
+
+        <section class="vm-section">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Published Documents</p>
+            <h2 class="vm-display-md vm-mb-lg">Available to download</h2>
+            <div class="vm-docs">
+              ${a.documents.map((doc, i) => `
+                <article class="vm-doc">
+                  <span class="vm-doc__num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+                  <div class="vm-doc__body">
+                    <h3 class="vm-doc__title">${esc(doc.title)}</h3>
+                    <p class="vm-doc__role">${esc(doc.role)}</p>
+                    <p class="vm-doc__summary">${esc(doc.summary)}</p>
+                    <p class="vm-doc__meta">${doc.meta.map(esc).join(' · ')}</p>
                   </div>
-                </article>`;
-              }).join('')}
+                  <div class="vm-doc__action">
+                    <a class="vm-btn vm-btn--secondary" href="${esc(doc.file)}"
+                       target="_blank" rel="noopener"
+                       aria-label="Open ${esc(doc.title)} (PDF, ${esc(doc.size)})">
+                      Open PDF
+                      <span class="vm-doc__size">${esc(doc.size)}</span>
+                    </a>
+                  </div>
+                </article>`).join('')}
             </div>
           </div>
         </section>
-        <section class="py-16 bg-canvas dark:bg-navy">
-          <div class="max-w-8xl mx-auto px-6 text-center">
-            <h2 class="text-2xl font-bold text-navy dark:text-white mb-4">Media Downloads</h2>
-            <p class="text-muted mb-8 max-w-lg mx-auto">Press materials, biography, and brand assets for media inquiries.</p>
-            <div class="flex flex-wrap justify-center gap-4">
-              <a href="${s.cv}" target="_blank" rel="noopener noreferrer" class="btn-lift inline-flex items-center gap-2 bg-gold text-navy font-semibold px-6 py-3 rounded-lg text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> View my CV</a>
-              <a href="speaking.html" class="btn-lift inline-flex items-center gap-2 border border-black/[0.08] dark:border-white/10 font-semibold px-6 py-3 rounded-lg text-sm hover:border-gold transition-colors"><i data-lucide="mic" class="w-4 h-4"></i> Speaking Profile</a>
+
+        <section class="vm-section vm-section--subtle">
+          <div class="vm-container">
+            <p class="vm-eyebrow vm-eyebrow--ruled">Available on Request</p>
+            <h2 class="vm-display-md vm-mb-lg">Further evidence</h2>
+            <div class="vm-index">
+              ${a.onRequest.map(x => `
+                <div class="vm-geo">
+                  <h3 class="vm-geo__country vm-doc__req-title">${esc(x.title)}</h3>
+                  <p class="vm-geo__role">${esc(x.detail)}</p>
+                </div>`).join('')}
+            </div>
+          </div>
+        </section>
+
+        <section class="vm-section--compact vm-section--navy">
+          <div class="vm-container vm-contact">
+            <div>
+              <h2 class="vm-display-md">Request further documentation</h2>
+              <p class="vm-lead vm-mt-sm">Happy to share signed agreements and audited reports directly with partners, recruiters and institutions.</p>
+            </div>
+            <div class="vm-contact__actions">
+              <a class="vm-btn vm-btn--primary" href="${esc(s.contact.mailto)}">Email</a>
+              ${VM.pages.contactDirect(true)}
+              <a class="vm-btn vm-btn--secondary vm-btn--on-navy" href="${esc(s.cv)}" target="_blank" rel="noopener noreferrer">Download CV</a>
             </div>
           </div>
         </section>`;
     },
 
     initProjectFilters() {
-      const items = document.querySelectorAll('.project-item');
-      document.querySelectorAll('#project-filters .filter-btn').forEach(btn => {
+      const items = document.querySelectorAll('.vm-project-item');
+      const buttons = document.querySelectorAll('#project-filters .vm-filter');
+      const status = document.getElementById('filter-status');
+
+      buttons.forEach(btn => {
         btn.addEventListener('click', () => {
           const filter = btn.dataset.filter;
-          document.querySelectorAll('#project-filters .filter-btn').forEach(b => b.classList.toggle('is-active', b === btn));
+          buttons.forEach(b => {
+            const on = b === btn;
+            b.classList.toggle('is-active', on);
+            b.setAttribute('aria-pressed', String(on));
+          });
+
+          let shown = 0;
           items.forEach(el => {
             const show = filter === 'all' || el.dataset.category === filter;
-            el.style.display = show ? '' : 'none';
+            el.hidden = !show;
+            if (show) shown += 1;
           });
+
+          if (status) {
+            status.textContent = shown + (shown === 1 ? ' case study' : ' case studies') + ' shown';
+          }
         });
       });
     },
 
-    initMediaFilters() {
-      const items = document.querySelectorAll('.media-item');
-      document.querySelectorAll('[data-media-filter]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const filter = btn.dataset.mediaFilter;
-          document.querySelectorAll('.media-filter-btn').forEach(b => b.classList.toggle('is-active', b === btn));
-          items.forEach(el => {
-            const show = filter === 'all' || el.dataset.type === filter;
-            el.style.display = show ? '' : 'none';
-          });
-        });
-      });
-    },
   };
 
   document.addEventListener('DOMContentLoaded', () => {

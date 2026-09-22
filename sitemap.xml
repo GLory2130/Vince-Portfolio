@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Replace https://www.example.com with the production origin before go-live. -->
-  <url><loc>https://www.example.com/</loc></url>
-  <url><loc>https://www.example.com/leadership.html</loc></url>
-  <url><loc>https://www.example.com/projects.html</loc></url>
-  <url><loc>https://www.example.com/gallery.html</loc></url>
-  <url><loc>https://www.example.com/media.html</loc></url>
-  <url><loc>https://www.example.com/speaking.html</loc></url>
-  <url><loc>https://www.example.com/project.html?slug=leading-aiesec-rwanda</loc></url>
-  <url><loc>https://www.example.com/project.html?slug=global-money-week-partnerships</loc></url>
-  <url><loc>https://www.example.com/project.html?slug=international-bd-support</loc></url>
-  <url><loc>https://www.example.com/project.html?slug=employer-branding-rwanda</loc></url>
-  <url><loc>https://www.example.com/project.html?slug=ifm-chapter-growth</loc></url>
-  <url><loc>https://www.example.com/project.html?slug=international-conference-bids</loc></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/</loc><priority>1.0</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/leadership.html</loc><priority>0.9</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/projects.html</loc><priority>0.9</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/speaking.html</loc><priority>0.8</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/gallery.html</loc><priority>0.7</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/appendix.html</loc><priority>0.7</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/project.html?slug=leading-aiesec-rwanda</loc><priority>0.8</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/project.html?slug=global-money-week-partnerships</loc><priority>0.8</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/project.html?slug=tanzania-national-partnerships</loc><priority>0.8</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/project.html?slug=employer-branding-rwanda</loc><priority>0.8</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/project.html?slug=ifm-chapter-growth</loc><priority>0.8</priority></url>
+  <url><loc>https://vince-portfolio-xi.vercel.app/project.html?slug=international-conference-bids</loc><priority>0.8</priority></url>
 </urlset>

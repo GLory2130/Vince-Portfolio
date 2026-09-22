@@ -1,30 +1,44 @@
 # Vicent Manila Portfolio
 
-> **Documentation has moved.** Start here: **[documentation/README.md](./documentation/README.md)**  
-> Full index: **[documentation/DOCUMENTATION_INDEX.md](./documentation/DOCUMENTATION_INDEX.md)**
+Executive editorial portfolio for Vicent Manila, focused on management consulting, research and evaluation, strategic partnerships and organizational leadership.
 
-**Current version:** `1.2.0` (`VM.version` in `assets/js/config.js`)
+**Current version:** `5.4.0`
 
----
-
-## Quick links
+## Start here
 
 | Resource | Link |
-|----------|------|
-| Product README | [documentation/README.md](./documentation/README.md) |
+|---|---|
+| Product documentation | [documentation/README.md](./documentation/README.md) |
+| Site-wide responsive revision | [documentation/SITE_REVISION_2026-09.md](./documentation/SITE_REVISION_2026-09.md) |
+| Mobile QA matrix | [documentation/MOBILE_QA_MATRIX.md](./documentation/MOBILE_QA_MATRIX.md) |
+| Content verification | [documentation/CONTENT_VERIFICATION.md](./documentation/CONTENT_VERIFICATION.md) |
 | Architecture | [documentation/ARCHITECTURE.md](./documentation/ARCHITECTURE.md) |
-| Maintenance | [documentation/MAINTENANCE_GUIDE.md](./documentation/MAINTENANCE_GUIDE.md) |
-| Deployment | [documentation/DEPLOYMENT_GUIDE.md](./documentation/DEPLOYMENT_GUIDE.md) |
 | Changelog | [documentation/CHANGELOG.md](./documentation/CHANGELOG.md) |
-
----
 
 ## Run locally
 
-Serve the repository root over HTTP (XAMPP, `npx serve`, etc.). Open `index.html` via the server — not as a `file://` URL.
+The production site is static and requires no build step.
 
----
+```bash
+python -m http.server 8899
+```
 
-## Note on this file
+Open `http://localhost:8899/index.html`.
 
-An earlier ThemeWagon Folio template README lived here. The active, accurate project documentation is maintained under `/documentation`.
+## Validate
+
+QA tooling is development-only:
+
+```bash
+npm install
+npm run validate
+npm run test:responsive
+```
+
+Pull requests run both static validation and browser-level responsive smoke tests.
+
+## Repository rules
+
+See [AGENTS.md](./AGENTS.md) and [documentation/CONTRIBUTING.md](./documentation/CONTRIBUTING.md).
+
+Professional claims must remain grounded in [documentation/CONTENT_VERIFICATION.md](./documentation/CONTENT_VERIFICATION.md).

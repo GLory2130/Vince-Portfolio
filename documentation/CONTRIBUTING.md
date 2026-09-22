@@ -1,101 +1,82 @@
-﻿# Contributing
+# Contributing
 
-**Version:** 1.2.0
+**Status:** current for v5.4.0
 
-Thank you for contributing to the Vicent Manila portfolio.
+## Workflow
 
----
+1. Branch from the latest `main`.
+2. Use a focused branch name such as `feature/...`, `fix/...`, `content/...` or `chore/...`.
+3. Make small, coherent commits.
+4. Keep all professional claims source-backed.
+5. Run validation.
+6. Push and open a pull request.
+7. Do not auto-merge.
 
-## Table of contents
+## Commit style
 
-1. [Ground rules](#ground-rules)
-2. [Branch naming](#branch-naming)
-3. [Commit messages](#commit-messages)
-4. [Coding standards](#coding-standards)
-5. [Responsive testing](#responsive-testing)
-6. [Images](#images)
-7. [Pull requests](#pull-requests)
-8. [Documentation](#documentation)
-
----
-
-## Ground rules
-
-- Do not redesign desktop without a clear need.
-- Do not remove factual content without approval.
-- Keep navy / gold / white branding.
-- Prefer data-file edits for copy changes.
-- Never commit secrets or private keys.
-
----
-
-## Branch naming
+Use concise imperative subjects:
 
 ```text
-feature/short-description
-fix/issue-description
-chore/tooling-or-docs
-content/update-area
+fix: prevent project hero clipping on small phones
+feat: add verified external resource
+docs: refresh responsive QA matrix
+ci: validate portfolio when pull requests open
 ```
 
-Examples: `feature/og-tags`, `fix/mobile-menu-ios`, `content/add-project-gmw`.
+Do not add AI/tool attribution or co-author lines.
 
----
+## Frontend rules
 
-## Commit messages
+- Edit content in `data.js` / `gallery-data.js` rather than duplicating claims in templates.
+- New visual rules belong in `design-system.css`, not the legacy `executive.css`.
+- Maintain the 900px navigation breakpoint.
+- Maintain 44px interactive targets.
+- Respect `prefers-reduced-motion`.
+- Provide accessible names for icon-only controls.
+- Keep every layout usable at 320px.
 
-Use concise, imperative subjects:
+## Required responsive checks
 
-```text
-fix: prevent project hero clipping on short phones
-feat: add sitemap and robots.txt
-docs: document contact update workflow
-chore(release): v1.2.1
+Automated:
+
+```bash
+npm install
+npm run validate
+npm run test:responsive
 ```
 
----
+Manual:
 
-## Coding standards
+- 320px phone,
+- 375px phone,
+- 430px phone,
+- 768px tablet,
+- 900px navigation transition,
+- one desktop width,
+- mobile menu,
+- project and gallery lightboxes.
 
-- Keep JS in IIFE modules on `window.VM`.
-- Escape user-facing dynamic strings with the existing `esc()` helpers.
-- Prefer CSS for motion; respect `prefers-reduced-motion`.
-- Maintain accessible names on icon-only controls.
-- Avoid introducing frameworks unless product direction changes.
-
----
-
-## Responsive testing
-
-Before merge, check at least:
-
-- 375×667, 390×844, 768×1024, 1280×800
-- One landscape phone width
-- Mobile menu open/close + lightbox
-- No horizontal scrollbar on home, project, gallery, connect
-
----
-
-## Images
-
-- Optimize before commit.
-- Update paths in `config.js` / `data.js` / `gallery-data.js`.
-- Provide alt text.
-- Verify `object-position` for portraits.
-
----
+See [MOBILE_QA_MATRIX.md](./MOBILE_QA_MATRIX.md).
 
 ## Pull requests
 
-PR description should include:
+PR descriptions should include:
 
-- Summary of change
-- Screenshots for UI work
-- Test plan checklist
-- Docs updates (if behaviour changed)
+- implementation summary,
+- responsive impact,
+- validation results,
+- Vercel preview,
+- documentation changes,
+- known exceptions.
 
----
+## Images
 
-## Documentation
+- prefer web-optimized assets,
+- use descriptive production filenames,
+- provide alt text,
+- verify portrait focal points,
+- do not hotlink third-party imagery when a local portfolio asset is available.
 
-Update the relevant file under `/documentation` in the same PR. Bump [CHANGELOG.md](./CHANGELOG.md) for user-visible changes.
+## Content
+
+Before publishing a role, metric, testimonial, external article or case-study claim, record its source in [CONTENT_VERIFICATION.md](./CONTENT_VERIFICATION.md).

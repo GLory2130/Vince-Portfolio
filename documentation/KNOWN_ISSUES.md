@@ -1,65 +1,46 @@
-﻿# Known Issues
+# Known Issues
 
-**Version:** 1.2.0  
-Documented from repository inspection on 2026-07-24.
+**Status:** current as of v5.4.0
 
----
+## Open
 
-## Table of contents
+### Legacy `executive.css` still ships
 
-1. [Content / assets](#content--assets)
-2. [SEO gaps](#seo-gaps)
-3. [Tooling](#tooling)
-4. [UX considerations](#ux-considerations)
-5. [Browser considerations](#browser-considerations)
-6. [Technical debt](#technical-debt)
+The legacy stylesheet contains a large amount of superseded styling and historical `!important` rules. `design-system.css` loads afterwards and is authoritative.
 
----
+New work must not extend the legacy layer. Retirement should happen through measured extraction and regression testing.
 
-## Content / assets
+### Large appendix PDFs remain in Git history
 
-| Issue | Impact | Mitigation |
-|-------|--------|------------|
-| `assets/cv/vicent-manila-cv.pdf` missing on disk | CV buttons 404 | Add PDF or update path |
-| Root `README.md` still describes ThemeWagon Folio / Alpine | Confusing for newcomers | Use `documentation/README.md` as entry; replace root README |
-| `includes/partials/` empty | Noise | Safe to ignore or delete |
+The evidence PDFs are intentional downloads and do not affect initial page load, but they increase repository clone size.
 
----
+### Google Fonts remain third-party
 
-## SEO gaps
+Fonts are loaded from Google with `display=swap`. Self-hosting would remove this remaining typography dependency.
 
-- `robots.txt` / `sitemap.xml` exist but still use `example.com` placeholders
-- Limited Open Graph / Twitter cards across pages
-- No canonical URLs
-- Project detail URLs use query strings (`?slug=`) — decide crawl strategy
+### Manual screen-reader verification remains outstanding
 
----
+Keyboard/focus/ARIA behavior is covered programmatically, but no full NVDA/JAWS/VoiceOver review has been documented.
 
-## Tooling
+## Resolved in v5.4.0
 
-- No `package.json` / lint / test scripts
-- Tailwind & Lucide loaded from CDN — require network; pin Lucide version for production stability (`@latest` can change)
+| Issue | Resolution |
+|---|---|
+| Lucide used `@latest` | pinned to 0.468.0 |
+| Mobile body scroll could leak behind drawer | explicit fixed-body scroll lock with restoration |
+| Orientation / dynamic viewport changes could desync mobile header | resize, orientation and `visualViewport` hooks added |
+| Responsive behavior depended heavily on legacy CSS | authoritative site-wide and page-specific contracts added to `design-system.css` |
+| Responsive checks were manual only | Playwright route/viewport smoke suite added |
+| PR validation did not verify page shells/assets | static validator + GitHub Actions CI added |
 
----
+## Historical resolved issues
 
-## UX considerations
-
-- Gallery filter row may scroll horizontally on small phones (intentional)
-- Testimonials autoplay pauses on hover but not always on touch focus (swipe supported)
-- Speaking page not in primary header nav (footer only)
-
----
-
-## Browser considerations
-
-- `100dvh` unsupported on very old browsers — `100vh` fallback present
-- `backdrop-filter` varies by browser; solid navy overlays remain readable
-- Safari address-bar resizing: prefer `dvh` panels (already used for nav/lightbox)
-
----
-
-## Technical debt
-
-- Footer nav links duplicated vs `VM.site.nav` (manual sync)
-- Tailwind config duplicated in every HTML head
-- No automated visual regression tests
+- unclickable navbar from inherited `pointer-events: none`,
+- unfixed header,
+- drawer focus timing failure,
+- mismatched 900/1024 navigation breakpoints,
+- undersized filter/tertiary targets,
+- dead first-load hash links,
+- missing CV path,
+- stale LinkedIn URL,
+- unverifiable testimonials/media.

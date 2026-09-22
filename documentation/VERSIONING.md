@@ -1,40 +1,32 @@
-﻿# Versioning
+# Versioning
 
-**Current version:** `1.2.0` (`VM.version` in `assets/js/config.js`)
+**Current version:** `5.4.0`
 
----
+The canonical runtime version is `VM.version` in `assets/js/config.js`.
 
-## Semantic Versioning
+## Semantic versioning
 
-This project uses **SemVer**: `MAJOR.MINOR.PATCH`
+| Increment | Use |
+|---|---|
+| MAJOR | incompatible architecture or major information-architecture redesign |
+| MINOR | significant UX revision, new feature set, new route or responsive system upgrade |
+| PATCH | bug fix, copy correction, asset swap or small style change |
 
-| Increment | When |
-|-----------|------|
-| **MAJOR** | Breaking IA changes, full redesign, incompatible content model |
-| **MINOR** | New pages/features, significant UX upgrades, additive data fields |
-| **PATCH** | Copy edits, bug fixes, asset swaps, small CSS fixes |
+## Asset cache version
 
-### Examples
+Every HTML shell carries `?v=X.Y.Z` on local CSS and JavaScript references.
 
-- `1.2.1` — Fix broken image path; update testimonial typo
-- `1.3.0` — Add blog page; add sitemap generation
-- `2.0.0` — Move to CMS-driven architecture
+The shell version and `VM.version` must match. The static validator fails when they diverge.
 
----
+## Release checklist
 
-## Release workflow
+1. Update `VM.version`.
+2. Update all shell `?v=` references.
+3. Update `CHANGELOG.md`.
+4. Update versioned documentation headers when relevant.
+5. Run `npm run validate`.
+6. Run `npm run test:responsive`.
+7. Merge through PR.
+8. Tag `vX.Y.Z` when a GitHub Release is required.
 
-1. Merge work to main branch.
-2. Update `VM.version` in `config.js`.
-3. Update [CHANGELOG.md](./CHANGELOG.md).
-4. Commit: `chore(release): v1.2.1`
-5. Tag: `git tag v1.2.1`
-6. Push branch + tag: `git push && git push --tags`
-
-`.github/workflows/release.yml` creates a GitHub Release when tags matching `v*` are pushed (`generate_release_notes: true`).
-
----
-
-## Documentation versions
-
-Documentation headers should match `VM.version` after each minor/major release.
+The release workflow creates a GitHub Release for pushed tags matching `v*`.

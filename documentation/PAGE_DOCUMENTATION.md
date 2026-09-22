@@ -1,127 +1,129 @@
-﻿# Page Documentation
+# Pages
 
-**Version:** 1.2.0
+**Status:** current for v5.4.0  
+**Renderer source:** `assets/js/pages.js`
 
----
-
-## Table of contents
-
-1. [Shared shell](#shared-shell)
-2. [Home](#home-indexhtml)
-3. [Leadership](#leadership-leadershiphtml)
-4. [Projects](#projects-projectshtml)
-5. [Project detail](#project-detail-projecthtml)
-6. [Gallery](#gallery-galleryhtml)
-7. [Insights / Media](#insights--media-mediahtml)
-8. [Speaking](#speaking-speakinghtml)
+Every public route uses a thin HTML shell and a JavaScript renderer selected by `body[data-page]`.
 
 ---
 
 ## Shared shell
 
-Every page includes:
+All shells include:
 
-- Skip link → `#main-content`
-- `#site-header` / `#main-content` / `#site-footer`
-- Theme bootstrap, Tailwind, Lucide, fonts, favicons, `executive.css`
-- Scripts: `config` → `data` → (`gallery-data`) → `layout` → `pages` → `site`
+- UTF-8 charset,
+- responsive viewport metadata,
+- unique title and description,
+- canonical URL,
+- theme color,
+- favicons and manifest,
+- pinned Lucide script,
+- versioned CSS and JavaScript assets,
+- skip link,
+- shared header/main/footer mount points.
 
-SEO: each page sets `<title>` and `<meta name="description">`. Theme color `#0B1F3A`.
-
----
-
-## Home (`index.html`)
-
-| | |
-|--|--|
-| **Purpose** | Primary landing / executive narrative |
-| **URL** | `/` or `index.html` |
-| **data-page** | `home` |
-| **Scripts** | Includes `gallery-data.js` |
-
-**Sections:** `#hero`, organizations strip, `#about`, `#experience`, `#projects`, `#leadership-action`, `#impact`, `#skills`, `#testimonials`, `#insights`, plus Connect in footer (`#contact`).
-
-**SEO:** JSON-LD `Person` (name, image, jobTitle, address TZ, email, telephone, sameAs LinkedIn, brand logo).
-
-**Responsive:** Dedicated mobile hero order and portrait; see Responsive Guide.
+The homepage additionally carries `Person` structured data.
 
 ---
 
-## Leadership (`leadership.html`)
+## Home — `index.html`
 
-| | |
-|--|--|
-| **Purpose** | Deep leadership journey |
-| **data-page** | `leadership` |
+Section order:
 
-**Sections:** Intro, impact stats, full timeline, organizations served, global contributions.
+1. Hero
+2. Professional standing
+3. Selected work
+4. Articles & Events / external resources
+5. Executive profile
+6. Leadership philosophy
+7. Areas of expertise
+8. Selected impact
+9. Career chronology preview
+10. International footprint
+11. Visual archive
+12. Contact
 
-**Navigation:** Primary nav “Leadership”.
-
----
-
-## Projects (`projects.html`)
-
-| | |
-|--|--|
-| **Purpose** | Filterable project index |
-| **data-page** | `projects` |
-
-**Sections:** Header, `#project-filters`, `#projects-grid` of `projectCard`.
-
-**Filters:** Keys from `projectCategories` (`all`, leadership, business-development, …).
+Phone behavior is portrait-first, one-column and CTA-friendly. External resource cards collapse to one column.
 
 ---
 
-## Project detail (`project.html`)
+## Leadership — `leadership.html`
 
-| | |
-|--|--|
-| **Purpose** | Case study |
-| **URL** | `project.html?slug=<slug>` |
-| **data-page** | `project` |
+Leadership philosophy → impact → full career chronology → international footprint → partnership CTA.
 
-**Sections:** Full-bleed hero, overview→execution prose, Project Gallery + lightbox, Impact Metrics, Related Projects.
-
-**Images:** `project.image` + `project.gallery[]` with `position`.
-
-**Limitation:** Missing slug redirects to projects list.
+On phones, chronology periods sit above roles and long organization/outcome text wraps without affecting the page width.
 
 ---
 
-## Gallery (`gallery.html`)
+## Selected Work — `projects.html`
 
-| | |
-|--|--|
-| **Purpose** | Photography collection |
-| **data-page** | `gallery` |
-| **Scripts** | Requires `gallery-data.js` |
+Case-study index with `aria-pressed` filters and live result count.
 
-**Sections:** Intro, horizontal/wrapping filters, masonry `#gallery-grid`, lightbox.
-
-**Data:** 13 images in `VM.galleryImages` (categories: speaking, leadership, partnerships, events, recognition).
+Below 600px filters become a horizontally scrollable control rail and all case studies use one-column editorial features.
 
 ---
 
-## Insights / Media (`media.html`)
+## Case Study — `project.html?slug=...`
 
-| | |
-|--|--|
-| **Purpose** | Thought leadership / press-style cards |
-| **data-page** | `media` |
+Dynamic route resolved from `VM.getProject(slug)`.
 
-**Sections:** Filters (`mediaFilters`), `#media-grid` editorial cards from `mediaItems`.
+Structure:
+
+hero → overview/challenge/objectives/role/strategy/execution/evidence → gallery → impact → related work.
+
+Phone behavior:
+
+- hero content is contained inside the image/scrim,
+- prose uses phone-safe gutters,
+- gallery and impact become one column,
+- related projects stack,
+- lightbox controls fit inside `100dvh`.
 
 ---
 
-## Speaking (`speaking.html`)
+## Gallery — `gallery.html`
 
-| | |
-|--|--|
-| **Purpose** | Speaking topics, engagements, booking CTAs |
-| **data-page** | `speaking` |
-| **Nav** | Footer (not primary header nav) |
+Masonry archive with category filters and lightbox.
 
-**Sections:** Topics, engagements, optional gallery strip, `#booking` with `contactCTAs`.
+Columns:
 
-**CTA copy:** “Book a Speaking Engagement” (no calendly / Schedule a Meeting).
+- 1 below 640px,
+- 2 from 640px,
+- 3 from 1024px.
+
+The lightbox supports keyboard navigation, swipe, focus return and dynamic-viewport sizing.
+
+---
+
+## Speaking — `speaking.html`
+
+Speaking hero → featured event → topics → engagements → external resources → photography → booking.
+
+The mobile hero is portrait-first; featured-event metadata and booking actions stack cleanly.
+
+---
+
+## Appendix — `appendix.html`
+
+Primary-source downloads plus evidence available on request.
+
+Document rows are:
+
+- fully stacked on very narrow phones,
+- number + body with action below on tablet,
+- number + body + action at desktop.
+
+Download controls state file weight.
+
+---
+
+## Adding a route
+
+1. Copy an existing shell.
+2. Set a unique `data-page`.
+3. Register a renderer in `pages.js`.
+4. Add unique metadata and canonical URL.
+5. Add the route to `sitemap.xml`.
+6. Add navigation only if it belongs in the six top-level destinations.
+7. Update the QA route list in `tests/responsive.spec.mjs`.
+8. Run static and browser validation.

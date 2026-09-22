@@ -1,198 +1,129 @@
 # Architecture
 
-**Version:** 1.2.0
+**Status:** current for v5.4.0
+
+The production site is static and data-driven. There is no application framework and no production build step. Development-only tooling exists for validation and responsive browser testing.
 
 ---
 
-## Table of contents
+## 1. Runtime shape
 
-1. [Overview](#overview)
-2. [Application structure](#application-structure)
-3. [Routing](#routing)
-4. [Boot sequence](#boot-sequence)
-5. [Module map](#module-map)
-6. [Component hierarchy](#component-hierarchy)
-7. [Data flow](#data-flow)
-8. [Asset organization](#asset-organization)
-9. [Navigation flow](#navigation-flow)
-10. [Responsive strategy](#responsive-strategy)
-11. [Configuration](#configuration)
-12. [Diagrams](#diagrams)
-
----
-
-## Overview
-
-The site is a **static multi-page application**. Each HTML file is a thin shell. Shared chrome and page bodies are injected by JavaScript into `#site-header`, `#main-content`, and `#site-footer`.
-
-Global namespace: `window.VM`.
-
----
-
-## Application structure
+Each route is a thin HTML shell containing metadata and three mount points:
 
 ```text
-HTML shell (data-page="…")
-  ├── config.js      → VM.site, VM.images, VM.version
-  ├── data.js        → VM.data + helpers
-  ├── gallery-data.js→ VM.galleryImages (home/gallery/speaking)
-  ├── layout.js      → header, footer, Connect, CTAs
-  ├── pages.js       → page HTML + filters/lightbox
-  └── site.js        → theme, nav, reveal, counters, carousel
+index.html  leadership.html  projects.html  project.html
+gallery.html  speaking.html  appendix.html
+        │
+        ├─ #site-header
+        ├─ #main-content
+        └─ #site-footer
 ```
 
-Styling: Tailwind utility classes in templates + `assets/css/executive.css` for brand and complex layouts.
-
----
-
-## Routing
-
-There is **no client-side router**.
-
-| URL | Mechanism |
-|-----|-----------|
-| `*.html` | Direct page load |
-| `project.html?slug=…` | Query param; `VM.pages.initProjectRedirect()` |
-| Hash links (`#about`, `#contact`) | Native scroll + `scroll-padding-top` |
-| Apache clean URLs | Optional `.htaccess` rewrites to `.html` |
-
-Invalid project slug → redirect to `projects.html`.
-
----
-
-## Boot sequence
-
-1. Inline script applies `dark` class from `localStorage` (`vm-theme`) before paint.
-2. Tailwind CDN + Lucide + fonts + `executive.css` load.
-3. Body scripts run in order (gallery-data only on pages that need it).
-4. `layout.js` replaces `#site-header` and fills `#site-footer` (includes Connect).
-5. `pages.js` fills `#main-content` based on `document.body.dataset.page`.
-6. `site.js` wires theme, nav, reveal, counters, timeline, testimonials, back-to-top.
-7. Lucide icons refreshed via `VM.ui.refreshIcons()`.
-
----
-
-## Module map
-
-| Module | Responsibility |
-|--------|----------------|
-| `config.js` | Site identity, contact URLs, image path map, version |
-| `data.js` | Portfolio content; `getProject`, `featuredProjects` |
-| `gallery-data.js` | Gallery catalogue + filters + `galleryFeatured` |
-| `layout.js` | Header / drawer / Connect / footer / compact CTAs |
-| `pages.js` | Page renderers, project case study, gallery UI, filters |
-| `site.js` | Interactions and progressive enhancement |
-
----
-
-## Component hierarchy
+Shared runtime modules:
 
 ```text
-document
-├── skip-link
-├── #site-header → <header.site-header>
-│   └── nav.site-header__nav (desktop links + CV + hamburger)
-├── #nav-overlay (sibling of header — not nested)
-├── #nav-drawer (mobile panel)
-├── #main-content → page sections from VM.pages
-└── #site-footer
-    ├── #contact.connect-section
-    ├── footer.site-footer
-    └── #back-to-top
+assets/js/
+  config.js        identity, navigation, contact, central image paths
+  data.js          professional content and case studies
+  gallery-data.js  gallery manifest
+  layout.js        shared header, drawer and footer
+  pages.js         route renderers, filters and lightboxes
+  site.js          navigation, reveal and back-to-top behavior
 ```
 
-Mobile drawer and overlay are **siblings of the header** (not children) so `backdrop-filter` on the scrolled header cannot clip `position: fixed` menu panels.
-
----
-
-## Data flow
-
-```mermaid
-flowchart LR
-  config[config.js] --> layout[layout.js]
-  config --> pages[pages.js]
-  data[data.js] --> pages
-  gallery[gallery-data.js] --> pages
-  pages --> main[#main-content]
-  layout --> header[#site-header]
-  layout --> footer[#site-footer]
-  site[site.js] --> ui[DOM interactions]
-```
-
-Content updates are made in data modules; renderers read them on each page load (no hydration framework).
-
----
-
-## Asset organization
-
-| Area | Path | Role |
-|------|------|------|
-| Brand | `assets/images/vincelogo.png` | Logo |
-| Favicons | `assets/images/favicon*` + android chrome | PWA / tabs |
-| Web photos | `assets/images/Vince/web/` | Site-facing optimized |
-| Gallery sources | `assets/images/Vince/gallery/` | Full gallery sources |
-| Thumbs | `assets/images/Vince/gallery/thumbs/` | Lightweight grid thumbs |
-| CV | `assets/cv/vicent-manila-cv.pdf` | Download target (file must be present) |
-
-See [IMAGE_ASSETS.md](./IMAGE_ASSETS.md).
-
----
-
-## Navigation flow
-
-**Primary nav** (`VM.site.nav`): About, Leadership, Experience, Projects, Gallery, Insights, Contact (CTA).
-
-**Footer-only extras:** Speaking (and full link set).
-
-**Mobile:** Full-height drawer below header; closes on link, Escape, backdrop, desktop resize.
-
----
-
-## Responsive strategy
-
-- Desktop layouts preserved from ~1024px upward.
-- Dedicated mobile rules for hero, Connect, project hero, nav, spacing.
-- Prefer `clamp()`, CSS Grid / Flex, `aspect-ratio`, `100dvh` for viewports.
-- Details: [RESPONSIVE_GUIDE.md](./RESPONSIVE_GUIDE.md).
-
----
-
-## Configuration
-
-Primary config object: `VM.site` in `assets/js/config.js`.
-
-Also:
-
-- `VM.version` — semantic version string
-- `VM.images` — named image shortcuts
-- Tailwind `tailwind.config` inline in each HTML head (colours, `maxWidth.8xl`)
-
----
-
-## Diagrams
-
-### Page request
-
-```mermaid
-sequenceDiagram
-  participant Browser
-  participant HTML
-  participant Layout
-  participant Pages
-  participant UI
-  Browser->>HTML: Load page
-  HTML->>Layout: DOMContentLoaded
-  Layout->>Browser: Header + Connect + Footer
-  HTML->>Pages: init(data-page)
-  Pages->>Browser: Main HTML
-  HTML->>UI: Bind interactions
-```
-
-### Project detail
+Stylesheets:
 
 ```text
-project.html?slug=leading-aiesec-rwanda
-  → VM.getProject(slug)
-  → hero + case study + gallery + impact + related
-  → initProjectGallery(lightbox)
+assets/css/
+  executive.css      legacy compatibility layer
+  utilities.css      reset + small retained utility vocabulary
+  design-system.css  authoritative tokens, components and responsive rules
 ```
+
+---
+
+## 2. Load order
+
+Styles load in this order:
+
+`executive.css → utilities.css → design-system.css`
+
+The order is load-bearing. `design-system.css` is authoritative and intentionally loads last.
+
+Scripts load in this order:
+
+`config.js → data.js → gallery-data.js → layout.js → pages.js → site.js`
+
+All modules attach to `window.VM`.
+
+---
+
+## 3. Rendering
+
+`pages.js` maps `body[data-page]` to the corresponding renderer.
+
+| data-page | Renderer |
+|---|---|
+| home | renderHome |
+| leadership | renderLeadership |
+| projects | renderProjects |
+| project | renderProject / initProjectRedirect |
+| gallery | renderGallery |
+| speaking | renderSpeaking |
+| appendix | renderAppendix |
+
+The project route resolves a case study from `?slug=`. Unknown slugs redirect to `projects.html`.
+
+Because content renders after `DOMContentLoaded`, `applyInitialHash()` re-applies anchor navigation after the target exists.
+
+---
+
+## 4. Content model
+
+Professional content lives in `VM.data`. Site identity and contact configuration live in `VM.site`. Gallery records live in `VM.galleryImages`.
+
+Professional claims must follow the source hierarchy in [CONTENT_VERIFICATION.md](./CONTENT_VERIFICATION.md).
+
+---
+
+## 5. Responsive architecture
+
+The responsive system follows one rule: **desktop structure may enhance mobile structure, but must never be required for readability.**
+
+Authoritative rules are in the final sections of `design-system.css`:
+
+- site-wide responsive hardening,
+- page-specific responsive contracts,
+- navigation target corrections.
+
+See [RESPONSIVE_GUIDE.md](./RESPONSIVE_GUIDE.md) and [MOBILE_QA_MATRIX.md](./MOBILE_QA_MATRIX.md).
+
+---
+
+## 6. Legacy stylesheet
+
+`executive.css` still ships and is the largest technical debt item. It contains older component rules and many `!important` declarations.
+
+New work must **not** extend the legacy layer. New fixes belong in `design-system.css`, which already neutralizes known legacy problems such as header pointer events, drawer transitions and obsolete rounded-card styling.
+
+---
+
+## 7. QA tooling
+
+Runtime remains dependency-free. QA tooling is development-only:
+
+- `scripts/validate-site.mjs` — static repository validation,
+- `@playwright/test` — responsive browser smoke tests,
+- `.github/workflows/ci.yml` — PR validation.
+
+The static site can still be deployed directly without npm.
+
+---
+
+## 8. Deployment
+
+The site is deployed as static files, currently through Vercel.
+
+Asset URLs carry a `?v=` cache key. Every HTML shell must use the same version as `VM.version`.
+
+`robots.txt` and `sitemap.xml` are maintained by hand.

@@ -1,0 +1,29 @@
+# Normalise line endings for text so the repo is consistent across machines.
+* text=auto
+
+# Binary assets. Without this, git sniffs some PDFs as text and applies CRLF
+# conversion, which corrupts them — and stages them as tens of thousands of
+# "line" insertions, making diffs unreviewable.
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.ico  binary
+*.gif  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.mp4  binary
+*.zip  binary
+
+# Keep web sources as LF in the repository.
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.xml  text eol=lf
+*.svg  text eol=lf

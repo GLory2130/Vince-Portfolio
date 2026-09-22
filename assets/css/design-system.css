@@ -1,0 +1,2069 @@
+/* ============================================================================
+   Vicent Manila — Design System
+   Implements DESIGN.md. Loaded AFTER executive.css and utilities.css.
+
+   Every value here is semantic. Components must never use raw hex.
+   ========================================================================== */
+
+:root {
+  /* ---- Colour: light theme -------------------------------------------- */
+  --vm-canvas:          #F7F5F1;   /* warm paper, not cool white */
+  --vm-canvas-subtle:   #F1EEE8;
+  --vm-surface:         #FDFCFA;
+
+  --vm-ink:             #14243A;   /* warm navy-black, never jet */
+  --vm-ink-secondary:   #40506A;
+  --vm-ink-muted:       #5A6675;   /* 5.37:1 on canvas - measured */
+
+  --vm-navy:            #0B1F3A;
+  --vm-navy-soft:       #16304F;
+
+  --vm-accent:          #B4893C;   /* gold — see DESIGN.md §3 */
+  --vm-accent-hover:    #96702E;
+  --vm-accent-subtle:   #EFE3CB;
+
+  --vm-border:          #DED8CD;
+  --vm-border-strong:   #B9AF9F;
+
+  --vm-on-navy:         #F3EFE7;
+  --vm-on-navy-muted:   #A9B6C7;
+
+  --vm-success:         #2F6F4F;
+  --vm-warning:         #8A6516;
+  --vm-error:           #9B2C2C;
+
+  /* ---- Typography ------------------------------------------------------ */
+  --vm-font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --vm-font-sans:  'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  --vm-display-xl: clamp(2.75rem, 6vw,   4.5rem);
+  --vm-display-lg: clamp(2.25rem, 4.4vw, 3.25rem);
+  --vm-display-md: clamp(1.75rem, 3vw,   2.375rem);
+  --vm-heading:    clamp(1.25rem, 2vw,   1.5rem);
+  --vm-lead:       clamp(1.125rem, 1.6vw, 1.3125rem);
+  --vm-body:       1rem;
+  --vm-body-sm:    0.875rem;
+  --vm-eyebrow:    0.75rem;
+  --vm-caption:    0.8125rem;
+
+  --vm-measure:    68ch;
+
+  /* ---- Geometry: near-square (DESIGN.md §6) ---------------------------- */
+  --vm-radius-sm:   2px;
+  --vm-radius-md:   4px;
+  --vm-radius-lg:   8px;   /* the largest radius in the system */
+  --vm-radius-img:  0;
+  --vm-radius-pill: 999px; /* genuine status chips only */
+
+  /* ---- Elevation: exactly one shadow ----------------------------------- */
+  --vm-shadow-image: 0 18px 44px rgba(11, 31, 58, 0.14);
+
+  /* ---- Layout ---------------------------------------------------------- */
+  --vm-max-w:        1320px;
+  --vm-max-w-wide:   1440px;
+  --vm-page-pad-x:   clamp(1.25rem, 4vw, 4rem);
+  --vm-gutter:       clamp(1rem, 2vw, 1.75rem);
+
+  /* Section rhythm — deliberately uneven (DESIGN.md §5) */
+  --vm-section-expansive: clamp(5rem,   10vw, 9rem);
+  --vm-section-standard:  clamp(4rem,   7vw,  6.5rem);
+  --vm-section-compact:   clamp(2.5rem, 4vw,  3.5rem);
+
+  --vm-transition: 160ms ease-out;
+}
+
+/* ---- Colour: dark theme — designed, not inverted (DESIGN.md §2) -------- */
+
+/* ============================================================================
+   Base
+   ========================================================================== */
+
+body {
+  background: var(--vm-canvas);
+  color: var(--vm-ink);
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-body);
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================================
+   Typography — serif for narrative, sans for structure (DESIGN.md §4)
+   The serif NEVER labels a control. The sans NEVER sets an editorial statement.
+   ========================================================================== */
+
+.vm-display,
+.vm-display-lg,
+.vm-display-md,
+.vm-quote {
+  font-family: var(--vm-font-serif);
+  font-weight: 400;            /* calm at scale — per IBM / WIRED */
+  color: var(--vm-ink);
+  text-wrap: balance;
+}
+
+.vm-display    { font-size: var(--vm-display-xl); line-height: 1.04; letter-spacing: -0.02em; }
+.vm-display-lg { font-size: var(--vm-display-lg); line-height: 1.08; letter-spacing: -0.018em; }
+.vm-display-md { font-size: var(--vm-display-md); line-height: 1.15; letter-spacing: -0.014em; }
+
+/* Section headings are SANS by default, so the serif retains its meaning. */
+.vm-heading {
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-heading);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--vm-ink);
+}
+
+.vm-eyebrow {
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-eyebrow);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vm-ink-muted);
+}
+
+/* Gold rule above a section eyebrow — one of gold's few sanctioned uses. */
+.vm-eyebrow--ruled::before {
+  content: '';
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  background: var(--vm-accent);
+  margin-bottom: 0.875rem;
+}
+
+.vm-lead {
+  font-size: var(--vm-lead);
+  line-height: 1.6;
+  color: var(--vm-ink-secondary);
+  max-width: var(--vm-measure);
+}
+
+.vm-prose  { max-width: var(--vm-measure); color: var(--vm-ink-secondary); }
+.vm-prose p + p { margin-top: 1.15em; }
+
+.vm-caption {
+  font-size: var(--vm-caption);
+  line-height: 1.45;
+  color: var(--vm-ink-muted);
+}
+
+/* ============================================================================
+   Layout
+   ========================================================================== */
+
+.vm-container      { max-width: var(--vm-max-w);      margin-inline: auto; padding-inline: var(--vm-page-pad-x); }
+.vm-container--wide{ max-width: var(--vm-max-w-wide); margin-inline: auto; padding-inline: var(--vm-page-pad-x); }
+
+.vm-section            { padding-block: var(--vm-section-standard); }
+.vm-section--expansive { padding-block: var(--vm-section-expansive); }
+.vm-section--compact   { padding-block: var(--vm-section-compact); }
+
+/* Surface change is the section divider — no borders or frames needed. */
+.vm-section--subtle { background: var(--vm-canvas-subtle); }
+.vm-section--navy   { background: var(--vm-navy); color: var(--vm-on-navy); }
+.vm-section--navy .vm-display,
+.vm-section--navy .vm-display-lg,
+.vm-section--navy .vm-display-md,
+.vm-section--navy .vm-heading { color: var(--vm-on-navy); }
+.vm-section--navy .vm-lead,
+.vm-section--navy .vm-prose   { color: var(--vm-on-navy-muted); }
+
+.vm-rule        { border: 0; border-top: 1px solid var(--vm-border); margin: 0; }
+.vm-rule--strong{ border-top: 1px solid var(--vm-border-strong); }
+
+/* ============================================================================
+   Buttons — no gold fills, no pills (DESIGN.md §8)
+   ========================================================================== */
+
+.vm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--vm-radius-md);
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-body-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--vm-transition), color var(--vm-transition), border-color var(--vm-transition);
+}
+
+.vm-btn--primary {
+  background: var(--vm-navy);
+  color: var(--vm-on-navy);
+  border: 1px solid var(--vm-navy);
+}
+.vm-btn--primary:hover { background: var(--vm-navy-soft); border-color: var(--vm-navy-soft); }
+
+
+.vm-btn--secondary {
+  background: transparent;
+  color: var(--vm-ink);
+  border: 1px solid var(--vm-border-strong);
+}
+.vm-btn--secondary:hover { border-color: var(--vm-ink); }
+
+/* Tertiary: text with a gold underline that thickens on hover. */
+.vm-btn--tertiary {
+  min-height: 0;
+  padding: 0.25rem 0;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--vm-accent);
+  border-radius: 0;
+  color: var(--vm-ink);
+}
+.vm-btn--tertiary:hover { border-bottom-width: 2px; }
+
+/* ============================================================================
+   Links
+   ========================================================================== */
+
+.vm-link {
+  color: var(--vm-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, currentColor 60%, transparent);
+  transition: text-decoration-color var(--vm-transition);
+}
+.vm-link:hover { text-decoration-color: currentColor; }
+
+/* ============================================================================
+   Metrics — hairline-separated row, never boxed (DESIGN.md §8)
+   ========================================================================== */
+
+.vm-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--vm-border);
+}
+
+.vm-metric {
+  padding: 1.75rem var(--vm-gutter) 1.75rem 0;
+  border-bottom: 1px solid var(--vm-border);
+}
+@media (min-width: 768px) {
+  .vm-metric + .vm-metric {
+    border-left: 1px solid var(--vm-border);
+    padding-left: var(--vm-gutter);
+  }
+}
+
+.vm-metric__value {
+  display: block;
+  font-family: var(--vm-font-serif);
+  font-size: var(--vm-display-md);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--vm-ink);
+}
+.vm-metric__label {
+  display: block;
+  margin-top: 0.625rem;
+  font-size: var(--vm-body-sm);
+  font-weight: 500;
+  color: var(--vm-ink);
+}
+.vm-metric__note {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: var(--vm-caption);
+  color: var(--vm-ink-muted);
+}
+
+/* ============================================================================
+   Photography (DESIGN.md §7) — square corners, explicit focal points
+   ========================================================================== */
+
+.vm-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--vm-radius-img);
+}
+
+.vm-img-frame { position: relative; overflow: hidden; background: var(--vm-canvas-subtle); }
+.vm-img-frame--shadow { box-shadow: var(--vm-shadow-image); }
+
+.vm-img--portrait-exec { aspect-ratio: 1 / 1; }
+.vm-img--portrait-ed   { aspect-ratio: 1 / 1; }
+
+/* Tight editorial crop for primary profile portraits.
+   Keeps focus on the face and upper torso while excluding wrists, watches
+   and bracelets from the visible frame. Source photography remains intact. */
+.vm-img--portrait-tight {
+  aspect-ratio: 5 / 4;
+}
+.vm-img--portrait-tight .vm-img,
+.vm-img-frame.vm-img--portrait-tight > .vm-img {
+  object-position: 50% 8% !important;
+}
+.vm-img--case-hero     { aspect-ratio: 3 / 2; }
+.vm-img--event         { aspect-ratio: 4 / 3; }
+
+/* ============================================================================
+   Expertise index — numbered, not carded (DESIGN.md §8)
+   ========================================================================== */
+
+.vm-index { border-top: 1px solid var(--vm-border); }
+
+.vm-index__item {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 0.65rem var(--vm-gutter);
+  padding-block: 2rem;
+  border-bottom: 1px solid var(--vm-border);
+}
+.vm-index__title {
+  grid-column: 2;
+  min-width: 0;
+}
+.vm-index__content,
+.vm-index__item > div {
+  grid-column: 2;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .vm-index__item {
+    grid-template-columns: 4rem minmax(0, 22rem) minmax(0, 1fr);
+    align-items: start;
+  }
+  .vm-index__title { grid-column: 2; }
+  .vm-index__content,
+  .vm-index__item > div { grid-column: 3; }
+}
+
+.vm-index__num {
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--vm-accent);
+  padding-top: 0.4rem;
+}
+.vm-index__title {
+  font-family: var(--vm-font-serif);
+  font-size: var(--vm-heading);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--vm-ink);
+}
+.vm-index__desc { color: var(--vm-ink-secondary); font-size: var(--vm-body-sm); max-width: 48ch; }
+.vm-index__comps {
+  margin-top: 0.5rem;
+  font-size: var(--vm-caption);
+  color: var(--vm-ink-muted);
+}
+
+/* ============================================================================
+   Career chronology — one continuous rule, no cards (DESIGN.md §8)
+   ========================================================================== */
+
+.vm-chrono { border-top: 1px solid var(--vm-border); }
+
+.vm-chrono__item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem var(--vm-gutter);
+  padding-block: 2.25rem;
+  border-bottom: 1px solid var(--vm-border);
+}
+@media (min-width: 900px) {
+  .vm-chrono__item { grid-template-columns: 11rem 1fr; }
+}
+
+.vm-chrono__period {
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vm-ink-muted);
+  padding-top: 0.3rem;
+}
+.vm-chrono__role {
+  font-family: var(--vm-font-serif);
+  font-size: var(--vm-heading);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--vm-ink);
+}
+.vm-chrono__org {
+  margin-top: 0.25rem;
+  font-size: var(--vm-body-sm);
+  font-weight: 500;
+  color: var(--vm-ink-secondary);
+}
+.vm-chrono__mandate { margin-top: 0.75rem; max-width: 62ch; color: var(--vm-ink-secondary); font-size: var(--vm-body-sm); }
+.vm-chrono__outcomes { margin-top: 0.875rem; padding: 0; list-style: none; max-width: 62ch; }
+.vm-chrono__outcomes li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-top: 0.4rem;
+  font-size: var(--vm-body-sm);
+  color: var(--vm-ink-secondary);
+}
+.vm-chrono__outcomes li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.62em;
+  width: 5px; height: 1px;
+  background: var(--vm-accent);
+}
+
+.vm-chrono__current {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--vm-accent);
+  border-radius: var(--vm-radius-pill);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vm-accent);
+  vertical-align: middle;
+}
+
+/* ============================================================================
+   Pull quote (DESIGN.md §8)
+   ========================================================================== */
+
+.vm-quote {
+  font-size: var(--vm-display-md);
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  max-width: 22ch;
+}
+.vm-quote--wide { max-width: 34ch; }
+.vm-quote::before {
+  content: '\201C';
+  display: block;
+  font-size: 2.5em;
+  line-height: 0.4;
+  color: var(--vm-accent);
+  margin-bottom: 0.25em;
+}
+
+/* ============================================================================
+   Accessibility (DESIGN.md §10)
+   ========================================================================== */
+
+:where(a, button, [tabindex], input, select, textarea):focus-visible {
+  outline: 2px solid var(--vm-accent);
+  outline-offset: 2px;
+  border-radius: var(--vm-radius-sm);
+}
+
+.vm-visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================================
+   Motion (DESIGN.md §9) — hard requirement, not an enhancement
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   Anti-pattern suppression (DESIGN.md §12)
+   Neutralises decorative vocabulary inherited from the previous design.
+   ========================================================================== */
+
+.vm-scope .blur-3xl,
+.vm-scope .blur-2xl,
+.vm-scope [class*='decor-blob'],
+.vm-scope .hero-glow {
+  display: none !important;
+}
+
+/* No horizontal overflow at any width — P0 (DESIGN.md §11). */
+html, body { overflow-x: clip; max-width: 100%; }
+img, svg, video { max-width: 100%; }
+
+/* ============================================================================
+   COMPONENTS — page composition
+   ========================================================================== */
+
+/* Spacing utilities */
+.vm-mt-sm { margin-top: 0.75rem; }
+.vm-mt-md { margin-top: 1.5rem; }
+.vm-mt-lg { margin-top: 2.5rem; }
+.vm-mb-lg { margin-bottom: 2.5rem; }
+
+/* ---- Hero ------------------------------------------------------------- */
+.vm-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .vm-hero__grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.85fr); }
+}
+
+.vm-hero__name { margin-top: 0.5rem; }
+
+.vm-hero__headline {
+  margin-top: 0.875rem;
+  font-family: var(--vm-font-sans);
+  font-size: clamp(1.0625rem, 1.8vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--vm-ink-secondary);
+  max-width: 30ch;
+}
+.vm-hero__summary  { margin-top: 1.25rem; max-width: 52ch; }
+.vm-hero__actions  { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+.vm-hero__location {
+  margin-top: 1.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: var(--vm-caption);
+}
+
+/* Mobile: portrait leads (DESIGN.md §11) */
+@media (max-width: 899px) {
+  .vm-hero__grid    { display: flex; flex-direction: column; }
+  .vm-hero__portrait{ order: -1; width: min(100%, 22rem); align-self: flex-start; }
+}
+
+/* ---- Credibility strip ------------------------------------------------- */
+.vm-proof {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem var(--vm-gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vm-proof__item {
+  position: relative;
+  padding-left: 1rem;
+  font-size: var(--vm-body-sm);
+  font-weight: 500;
+  color: var(--vm-ink-secondary);
+}
+.vm-proof__item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.62em;
+  width: 6px; height: 1px;
+  background: var(--vm-accent);
+}
+
+/* ---- Selected work features -------------------------------------------- */
+.vm-features { display: grid; gap: clamp(3rem, 6vw, 5rem); }
+
+.vm-feature { display: grid; gap: 1.5rem; }
+@media (min-width: 900px) {
+  .vm-feature { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: center; }
+  /* Alternate only for rhythm, never mechanically on every row. */
+  .vm-feature:nth-child(even) .vm-feature__media { order: 2; }
+}
+
+.vm-feature__media { display: block; }
+.vm-feature__media img { transition: transform 400ms ease-out; }
+.vm-feature__media:hover img { transform: scale(1.02); }
+
+.vm-feature__num { color: var(--vm-accent); margin-right: 0.625rem; }
+
+.vm-feature__title {
+  margin-top: 0.75rem;
+  font-family: var(--vm-font-serif);
+  font-size: var(--vm-display-md);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.014em;
+}
+.vm-feature__title a { color: var(--vm-ink); text-decoration: none; }
+.vm-feature__title a:hover { text-decoration: underline; text-underline-offset: 0.12em; }
+
+.vm-feature__summary { margin-top: 0.875rem; max-width: 52ch; color: var(--vm-ink-secondary); font-size: var(--vm-body-sm); }
+
+.vm-feature__outcome {
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--vm-border);
+  max-width: 52ch;
+  font-size: var(--vm-body-sm);
+  font-weight: 500;
+  color: var(--vm-ink);
+}
+.vm-feature .vm-btn--tertiary { margin-top: 1.25rem; }
+
+/* ---- Homepage external resources ---------------------------------------- */
+.vm-publications-section {
+  border-top: 1px solid var(--vm-border);
+}
+
+.vm-publications-head {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.vm-publications-head > p {
+  max-width: 58ch;
+  color: var(--vm-ink-secondary);
+  font-size: var(--vm-body-sm);
+}
+
+.vm-publication-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+@media (min-width: 800px) {
+  .vm-publication-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.vm-publication {
+  min-width: 0;
+}
+
+.vm-publication__media {
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: var(--vm-canvas-subtle);
+  overflow: hidden;
+}
+.vm-publication__media .vm-img {
+  transition: transform 420ms ease-out;
+}
+.vm-publication__media:hover .vm-img {
+  transform: scale(1.025);
+}
+
+.vm-publication__body {
+  padding-top: 1rem;
+}
+
+.vm-publication__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: var(--vm-caption);
+  color: var(--vm-ink-muted);
+}
+
+.vm-publication__title {
+  margin-top: 0.5rem;
+  max-width: 28ch;
+  font-family: var(--vm-font-serif);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.vm-publication__title a {
+  color: var(--vm-ink);
+  text-decoration: none;
+}
+.vm-publication__title a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+}
+
+.vm-publication .vm-inline-external {
+  margin-top: 1rem;
+}
+
+/* ---- Executive profile -------------------------------------------------- */
+.vm-profile { display: grid; gap: clamp(2rem, 5vw, 4rem); }
+@media (min-width: 900px) {
+  .vm-profile { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); align-items: start; }
+}
+.vm-profile__body { margin-top: 1.25rem; font-size: var(--vm-lead); line-height: 1.6; }
+
+.vm-facts { margin-top: 2.5rem; border-top: 1px solid var(--vm-border); }
+.vm-facts__row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem;
+  padding-block: 1rem;
+  border-bottom: 1px solid var(--vm-border);
+}
+@media (min-width: 600px) {
+  .vm-facts__row { grid-template-columns: 9rem 1fr; gap: var(--vm-gutter); align-items: baseline; }
+}
+.vm-facts__row dd { margin: 0; font-size: var(--vm-body-sm); color: var(--vm-ink); }
+
+/* ---- Leadership philosophy — signature editorial moment ----------------- */
+.vm-philosophy__grid { display: grid; gap: 1.5rem; }
+@media (min-width: 900px) {
+  .vm-philosophy__grid { grid-template-columns: 14rem 1fr; align-items: start; gap: clamp(2rem, 5vw, 4rem); }
+}
+
+/* ---- Evidence bridge & resource links ----------------------------------- */
+.vm-evidence-bridge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--vm-border);
+}
+.vm-evidence-bridge p {
+  max-width: 60ch;
+  color: var(--vm-ink-secondary);
+  font-size: var(--vm-body-sm);
+}
+
+.vm-project-resources,
+.vm-resource-list {
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--vm-border);
+}
+.vm-resource-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 56px;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--vm-border);
+  color: var(--vm-ink);
+  text-decoration: none;
+  transition: color var(--vm-transition), border-color var(--vm-transition);
+}
+.vm-resource-link:hover {
+  color: var(--vm-accent-hover);
+  border-bottom-color: var(--vm-border-strong);
+}
+.vm-resource-link span { min-width: 0; }
+.vm-resource-link strong {
+  display: block;
+  font-size: var(--vm-body-sm);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.vm-resource-link small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--vm-ink-muted);
+  font-size: var(--vm-caption);
+}
+.vm-resource-link svg,
+.vm-inline-external svg { flex: 0 0 auto; }
+
+.vm-inline-external {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+  color: var(--vm-ink);
+  font-size: var(--vm-body-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--vm-accent);
+  text-underline-offset: 0.25em;
+}
+
+/* ---- Featured speaking event -------------------------------------------- */
+.vm-event-feature {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+.vm-event-feature__media {
+  width: min(100%, 30rem);
+  aspect-ratio: 4 / 5;
+  justify-self: start;
+  box-shadow: var(--vm-shadow-image);
+}
+.vm-event-feature__body { max-width: 42rem; }
+.vm-event-meta {
+  margin: 2rem 0;
+  border-top: 1px solid var(--vm-border);
+}
+.vm-event-meta > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--vm-gutter);
+  padding-block: 0.75rem;
+  border-bottom: 1px solid var(--vm-border);
+}
+.vm-event-meta dt {
+  font-size: var(--vm-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vm-ink-muted);
+}
+.vm-event-meta dd {
+  margin: 0;
+  color: var(--vm-ink);
+  font-size: var(--vm-body-sm);
+}
+@media (min-width: 800px) {
+  .vm-event-feature {
+    grid-template-columns: minmax(18rem, 0.72fr) minmax(0, 1.28fr);
+  }
+  .vm-event-feature__media { justify-self: stretch; }
+}
+@media (max-width: 479px) {
+  .vm-index__item { grid-template-columns: 2.25rem minmax(0, 1fr); }
+  .vm-index__num { padding-top: 0.25rem; }
+  .vm-index__comps { line-height: 1.65; overflow-wrap: anywhere; }
+  .vm-event-meta > div { grid-template-columns: 1fr; gap: 0.2rem; }
+}
+
+/* ---- Geography index ---------------------------------------------------- */
+.vm-geo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--vm-border);
+}
+@media (min-width: 700px) {
+  .vm-geo { grid-template-columns: 12rem 1fr; gap: var(--vm-gutter); align-items: baseline; }
+}
+.vm-geo__country {
+  font-family: var(--vm-font-serif);
+  font-size: var(--vm-heading);
+  font-weight: 400;
+  color: var(--vm-ink);
+}
+.vm-geo__role { font-size: var(--vm-body-sm); color: var(--vm-ink-secondary); }
+
+/* ---- Partners — typographic index, not fake logos ----------------------- */
+.vm-partners { margin-top: 2.5rem; }
+.vm-partners__list {
+  margin-top: 0.875rem;
+  max-width: 70ch;
+  font-size: var(--vm-body-sm);
+  line-height: 1.9;
+  color: var(--vm-ink-secondary);
+}
+
+/* ---- Photography grid --------------------------------------------------- */
+.vm-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--vm-gutter);
+}
+
+/* ---- Contact ------------------------------------------------------------ */
+.vm-contact { display: grid; gap: 2rem; }
+@media (min-width: 900px) {
+  .vm-contact { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(2rem, 5vw, 4rem); }
+}
+.vm-contact__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.vm-btn--on-navy { color: var(--vm-on-navy); border-color: rgba(243, 239, 231, 0.35); }
+.vm-btn--on-navy:hover { border-color: var(--vm-on-navy); }
+
+/* ---- Page head ---------------------------------------------------------- */
+.vm-page-head { padding-top: clamp(7rem, 12vw, 10rem); }
+
+/* ============================================================================
+   Legacy suppression — the previous design's decorative vocabulary.
+   These rules exist because executive.css still ships; they neutralise the
+   anti-patterns listed in DESIGN.md §12 without a risky 87KB deletion.
+   ========================================================================== */
+
+.hero-orb, .hero-glow, .decor-blob, .section-orb,
+[class*='blur-3xl'], [class*='blur-2xl'] { display: none !important; }
+
+/* Collapse SaaS rounding inherited from executive.css */
+.card-executive, .stat-card, .project-card, .journey-panel,
+.media-editorial, .speaking-gallery-item {
+  border-radius: var(--vm-radius-lg) !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================================
+   NAVIGATION — calm executive bar (DESIGN.md §8)
+   Overrides the inherited floating rounded-pill header.
+   ========================================================================== */
+
+.site-header {
+  top: 0 !important;
+  padding-inline: 0 !important;
+  background: color-mix(in srgb, var(--vm-canvas) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--vm-border);
+}
+
+.site-header__nav {
+  max-width: var(--vm-max-w) !important;
+  margin-inline: auto;
+  padding: 0.75rem var(--vm-page-pad-x) !important;
+  min-height: 64px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.site-header--scrolled .site-header__nav { min-height: 60px !important; }
+
+/* Active item: a 2px gold underline, one at a time. */
+.nav-link {
+  position: relative;
+  border-radius: 0 !important;
+  color: var(--vm-ink-secondary) !important;
+  font-weight: 500;
+}
+.nav-link:hover { color: var(--vm-ink) !important; }
+.nav-link.is-active { color: var(--vm-ink) !important; }
+.nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem; right: 0.75rem; bottom: 0.15rem;
+  height: 2px;
+  background: var(--vm-accent);
+}
+
+.brand-name { color: var(--vm-ink) !important; }
+
+#theme-toggle,
+#nav-toggle {
+  border-radius: var(--vm-radius-md) !important;
+  border-color: var(--vm-border) !important;
+  color: var(--vm-ink);
+}
+#theme-toggle:hover,
+#nav-toggle:hover { background: var(--vm-canvas-subtle) !important; }
+
+/* Offset for the fixed header */
+:root { --vm-header-h: 64px; }
+main { padding-top: 0; }
+.vm-hero { padding-top: calc(var(--vm-header-h) + var(--vm-section-expansive)); }
+.vm-page-head { padding-top: calc(var(--vm-header-h) + clamp(3rem, 8vw, 6rem)); }
+
+/* Anchor targets clear the fixed header */
+[id] { scroll-margin-top: calc(var(--vm-header-h) + 1rem); }
+
+/* Mobile drawer surfaces */
+.nav-drawer__panel { background: var(--vm-canvas) !important; }
+.nav-mobile-link   { color: var(--vm-ink) !important; border-radius: var(--vm-radius-md) !important; }
+.nav-mobile-link.is-active { color: var(--vm-accent) !important; }
+
+/* Footer */
+.site-footer { background: var(--vm-navy) !important; border-top: 1px solid var(--vm-border) !important; }
+
+/* ============================================================================
+   FILTERS — genuine controls, so a pill radius is sanctioned here (DESIGN.md §6)
+   ========================================================================== */
+
+.vm-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--vm-border);
+}
+
+.vm-filter {
+  min-height: 44px;   /* touch target minimum (DESIGN.md 10) */
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid var(--vm-border);
+  border-radius: var(--vm-radius-pill);
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-body-sm);
+  font-weight: 500;
+  color: var(--vm-ink-secondary);
+  cursor: pointer;
+  transition: border-color var(--vm-transition), color var(--vm-transition), background var(--vm-transition);
+}
+.vm-filter:hover { border-color: var(--vm-border-strong); color: var(--vm-ink); }
+
+.vm-filter.is-active {
+  background: var(--vm-navy);
+  border-color: var(--vm-navy);
+  color: var(--vm-on-navy);
+}
+
+.vm-project-item[hidden] { display: none; }
+
+/* ============================================================================
+   GALLERY — editorial archive, square crops (DESIGN.md §7, §34)
+   ========================================================================== */
+
+.gallery-masonry {
+  columns: 1;
+  column-gap: var(--vm-gutter);
+}
+@media (min-width: 640px)  { .gallery-masonry { columns: 2; } }
+@media (min-width: 1024px) { .gallery-masonry { columns: 3; } }
+
+.gallery-masonry > * {
+  break-inside: avoid;
+  margin-bottom: var(--vm-gutter);
+  border-radius: var(--vm-radius-img) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+  background: var(--vm-canvas-subtle);
+}
+
+.gallery-masonry img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--vm-radius-img) !important;
+}
+
+.gallery-item__caption,
+.gallery-masonry figcaption {
+  padding: 0.75rem 0 0;
+  font-size: var(--vm-caption);
+  line-height: 1.45;
+  color: var(--vm-ink-muted);
+}
+
+/* ---- Lightbox ---------------------------------------------------------- */
+.lightbox { background: rgba(7, 16, 28, 0.94); }
+.lightbox__shell,
+.lightbox__figure { border-radius: var(--vm-radius-img) !important; }
+.lightbox__figure img { border-radius: var(--vm-radius-img) !important; }
+
+.lightbox__btn {
+  border-radius: var(--vm-radius-md) !important;
+  min-width: 44px;
+  min-height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.lightbox__btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+.lightbox__caption h2 {
+  font-family: var(--vm-font-serif);
+  font-weight: 400;
+  font-size: 1.125rem;
+  color: #fff;
+}
+.lightbox__caption p,
+.lightbox__counter { font-size: var(--vm-caption); color: rgba(255, 255, 255, 0.7); }
+
+/* ---- Speaking page residuals ------------------------------------------- */
+.speaking-topic,
+.speaking-engagement,
+.speaking-utility__panel {
+  border-radius: var(--vm-radius-lg) !important;
+  box-shadow: none !important;
+}
+
+/* Gallery caption: an image title is not a document heading (DESIGN.md §10). */
+.gallery-card__title {
+  margin-top: 0.35rem;
+  font-family: var(--vm-font-serif);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--vm-ink);
+}
+.gallery-card__caption {
+  margin-top: 0.2rem;
+  font-size: var(--vm-caption);
+  color: var(--vm-ink-muted);
+}
+.gallery-card { cursor: pointer; }
+.gallery-card:focus-visible { outline: 2px solid var(--vm-accent); outline-offset: 3px; }
+
+/* ---- Case study residuals (DESIGN.md §6) ------------------------------- */
+.project-gold-rule,
+.project-gallery__item,
+.project-hero__panel,
+.project-related__item {
+  border-radius: var(--vm-radius-img) !important;
+  box-shadow: none !important;
+}
+.project-gallery__item img { border-radius: var(--vm-radius-img) !important; }
+
+/* Case-study prose: readable measure and the serif/sans split */
+.prose-cs { max-width: var(--vm-measure); }
+.prose-cs h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.625rem;
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vm-ink-muted);
+}
+.prose-cs h2:first-child { margin-top: 0; }
+.prose-cs p, .prose-cs li { color: var(--vm-ink-secondary); }
+.prose-cs ul { padding-left: 1.1rem; }
+.prose-cs li { margin-top: 0.35rem; }
+.project-impact-item,
+.project-related,
+.project-related img,
+.project-hero__media,
+.project-summary-card {
+  border-radius: var(--vm-radius-lg) !important;
+  box-shadow: none !important;
+}
+.project-related, .project-related img { border-radius: var(--vm-radius-img) !important; }
+
+/* ============================================================================
+   ACCESSIBILITY CORRECTIONS — measured, not assumed (WCAG 2.2 AA)
+   Verified in-browser against the real rendered surfaces.
+   ========================================================================== */
+
+:root {
+  /* Gold as TEXT measured 2.93:1 and fails AA. --vm-accent stays the
+     decorative rule/border colour; text gold gets its own darker token. */
+  --vm-accent-text: #7E6029;        /* 5.37:1 canvas / 5.05:1 subtle */
+}
+
+
+.vm-index__num,
+.vm-feature__num,
+.vm-chrono__current { color: var(--vm-accent-text); }
+.vm-chrono__current { border-color: var(--vm-accent-text); }
+
+/* Eyebrow and caption on inverse surfaces must use the on-navy scale. */
+.vm-section--navy .vm-eyebrow,
+.vm-section--navy .vm-caption { color: var(--vm-on-navy-muted); }
+
+/* executive.css targets `.gallery-card__meta p` (0,2,0) and wins over a single
+   class. Match its specificity so the design tokens apply. */
+.gallery-card__meta .gallery-card__title { color: var(--vm-ink); }
+.gallery-card__meta .gallery-card__caption { color: var(--vm-ink-muted); }
+.gallery-card__meta .vm-eyebrow { color: var(--vm-ink-muted); }
+.gallery-card { background: var(--vm-surface); }
+
+/* Gold text on a navy surface needs the lifted gold: the light-theme
+   --vm-accent-text (#7E6029) measures only 2.83:1 on --vm-navy. */
+.site-footer .text-gold,
+.site-footer .text-gold\/90,
+.vm-section--navy .text-gold,
+.vm-section--navy .vm-index__num,
+.vm-section--navy .vm-feature__num { color: #D0A857; }
+
+/* ============================================================================
+   APPENDIX — document index (DESIGN.md §8)
+   A downloadable resource is a genuine independent unit, so hairline-separated
+   rows are used rather than cards, consistent with the rest of the system.
+   ========================================================================== */
+
+.vm-docs { border-top: 1px solid var(--vm-border); }
+
+.vm-doc {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding-block: 2rem;
+  border-bottom: 1px solid var(--vm-border);
+}
+@media (min-width: 900px) {
+  .vm-doc {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    gap: var(--vm-gutter);
+    align-items: start;
+  }
+}
+
+.vm-doc__num {
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--vm-accent-text);
+  padding-top: 0.35rem;
+}
+
+.vm-doc__title {
+  font-family: var(--vm-font-serif);
+  font-size: var(--vm-heading);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--vm-ink);
+}
+.vm-doc__role {
+  margin-top: 0.3rem;
+  font-size: var(--vm-body-sm);
+  font-weight: 500;
+  color: var(--vm-ink-secondary);
+}
+.vm-doc__summary {
+  margin-top: 0.7rem;
+  max-width: 62ch;
+  font-size: var(--vm-body-sm);
+  color: var(--vm-ink-secondary);
+}
+.vm-doc__meta {
+  margin-top: 0.75rem;
+  font-size: var(--vm-caption);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vm-ink-muted);
+}
+
+.vm-doc__action { align-self: center; }
+.vm-doc__action .vm-btn { white-space: nowrap; }
+
+/* Weight is stated on the control itself — a 12MB download should never be a
+   surprise, particularly on a metered mobile connection. */
+.vm-doc__size {
+  font-size: var(--vm-caption);
+  font-weight: 400;
+  color: var(--vm-ink-muted);
+}
+
+/* The "on request" rows carry sentences, not short labels, so the serif
+   country-style treatment is relaxed to a readable sans line. */
+.vm-doc__req-title {
+  font-family: var(--vm-font-sans);
+  font-size: var(--vm-body);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* ============================================================================
+   NAVIGATION v2 — semantic, single source of truth for visibility
+   ============================================================================
+   Visibility is owned here by one media query, not by utility classes that a
+   component rule can override. Breakpoint is 900px rather than 1024px: five
+   links plus the CTA fit comfortably, so tablets get real navigation instead
+   of a hamburger.
+   ========================================================================== */
+
+.vm-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: var(--vm-max-w);
+  margin-inline: auto;
+  padding: 0.6rem var(--vm-page-pad-x);
+  min-height: 64px;
+}
+
+/* ---- Brand -------------------------------------------------------------- */
+.vm-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.vm-nav__brand .brand-logo--nav { height: 34px; width: auto; border-radius: var(--vm-radius-sm); }
+.vm-nav__brand .brand-name {
+  display: block;               /* was hidden on mobile; the name is the brand */
+  font-family: var(--vm-font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--vm-ink);
+  white-space: nowrap;
+}
+/* The name is the brand, so it stays visible: measured, the lockup plus both
+   44px controls fits inside 320px with room to spare. */
+
+/* ---- Links -------------------------------------------------------------- */
+.vm-nav__links {
+  display: none;                /* shown at >=900px */
+  align-items: center;
+  gap: 0.15rem;
+  margin: 0 auto 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.vm-nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 0.7rem;
+  font-family: var(--vm-font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--vm-ink-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--vm-transition);
+}
+.vm-nav__link:hover { color: var(--vm-ink); }
+
+/* Active state: ink text with a gold underline. The text itself is NOT gold —
+   the underline alone carries the signal, keeping gold scarce (DESIGN.md §3). */
+.vm-nav__link.is-active { color: var(--vm-ink); font-weight: 600; }
+.vm-nav__link.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0.7rem; right: 0.7rem; bottom: 0.1rem;
+  height: 2px;
+  background: var(--vm-accent);
+}
+
+/* ---- Actions ------------------------------------------------------------ */
+.vm-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.vm-nav__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--vm-border);
+  border-radius: var(--vm-radius-md);
+  background: transparent;
+  color: var(--vm-ink);
+  cursor: pointer;
+  transition: background var(--vm-transition), border-color var(--vm-transition);
+}
+.vm-nav__icon-btn:hover { background: var(--vm-canvas-subtle); border-color: var(--vm-border-strong); }
+
+.vm-nav__cta { display: none; }   /* shown at >=900px */
+
+/* ---- Breakpoint --------------------------------------------------------- */
+@media (min-width: 900px) {
+  .vm-nav__links  { display: flex; }
+  .vm-nav__cta    { display: inline-flex; }
+  .vm-nav__toggle { display: none; }
+}
+
+
+/* The drawer and overlay are mobile-only. executive.css hides them from 1024px,
+   but the nav breakpoint is 900px — realign so the two cannot both be active. */
+@media (min-width: 900px) {
+  .nav-overlay, .nav-drawer { display: none !important; }
+}
+
+/* Phone number stated in the contact band; the buttons above act on it. */
+.vm-contact__number {
+  margin-top: 1.25rem;
+  letter-spacing: 0.04em;
+}
+.vm-section--navy .vm-contact__number { color: var(--vm-on-navy-muted); }
+
+/* ============================================================================
+   DRAWER — visibility must not be transitioned
+   ============================================================================
+   executive.css transitions `visibility` alongside `transform`. During that
+   window the drawer is still visibility:hidden, and hidden elements silently
+   reject focus — which is why opening the menu left focus behind it. Animate
+   transform only, so the drawer is focusable the instant `.is-open` lands and
+   focus management no longer depends on frame timing.
+   ========================================================================== */
+.nav-drawer {
+  transition: transform 0.3s ease !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-drawer { transition: none !important; }
+}
+
+/* ============================================================================
+   HEADER — authoritative layout
+   ============================================================================
+   executive.css styles .site-header for the previous floating-pill design: it
+   sets `pointer-events: none` on the header (the pill child re-enabled them),
+   offsets `top` on small screens, and never sets `position` itself — the old
+   markup carried Tailwind's `fixed inset-x-0 top-0`.
+
+   The rebuilt header has no pill child and no utility classes, so those
+   assumptions left the bar static AND completely unclickable. Everything the
+   header needs is declared here so it no longer depends on executive.css.
+   ========================================================================== */
+
+.site-header {
+  position: fixed;
+  top: 0 !important;          /* executive.css offsets this under 768px */
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  padding-inline: 0 !important;
+  pointer-events: auto !important;
+}
+
+/* Re-enable interaction for every descendant the inherited `none` disabled. */
+.site-header * { pointer-events: auto; }
+
+.vm-nav,
+.vm-nav a,
+.vm-nav button { pointer-events: auto; }
+
+/* ============================================================================
+   TERTIARY BUTTON — touch target
+   ============================================================================
+   The tertiary variant is a text link with a gold underline, so it was set to
+   min-height:0 to keep the rule tight against the text. That produced a 32px
+   tap target, below the 44px minimum (DESIGN.md §10).
+
+   The anchor is padded to 44px and the underline moves to a pseudo-element
+   pinned just under the text, so the target grows without the rule drifting
+   away from the words.
+   ========================================================================== */
+
+.vm-btn--tertiary {
+  position: relative;
+  min-height: 44px;
+  padding: 0.625rem 0;
+  border-bottom: 0;
+  align-items: center;
+}
+.vm-btn--tertiary::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(50% - 0.85em);   /* sits just below the text, not the box */
+  height: 1px;
+  background: var(--vm-accent);
+  transition: height var(--vm-transition);
+}
+.vm-btn--tertiary:hover::after { height: 2px; }
+
+
+/* ============================================================================
+   SITE-WIDE RESPONSIVE HARDENING — v5.4
+   Authoritative mobile rules. These load after executive.css and are designed
+   to remove legacy fixed-width assumptions without changing the editorial
+   desktop language.
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  min-width: 0;
+  overflow-x: clip;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body,
+main,
+section,
+article,
+header,
+footer,
+nav,
+figure,
+div {
+  min-width: 0;
+}
+
+.vm-container,
+.vm-container--wide,
+.project-content,
+.max-w-8xl {
+  width: 100%;
+}
+
+.vm-display,
+.vm-display-lg,
+.vm-display-md,
+.vm-heading,
+.vm-feature__title,
+.vm-publication__title,
+.vm-chrono__role,
+.vm-doc__title,
+.project-hero__title,
+.project-related__title {
+  overflow-wrap: anywhere;
+}
+
+.vm-lead,
+.vm-prose,
+.vm-feature__summary,
+.vm-feature__outcome,
+.vm-index__desc,
+.vm-index__comps,
+.vm-chrono__mandate,
+.vm-chrono__org,
+.vm-doc__summary,
+.vm-resource-link strong,
+.vm-resource-link small,
+.project-hero__summary,
+.project-related__summary {
+  overflow-wrap: anywhere;
+}
+
+/* Flex/grid children must be allowed to shrink. */
+.vm-hero__grid > *,
+.vm-profile > *,
+.vm-feature > *,
+.vm-contact > *,
+.vm-event-feature > *,
+.vm-publication-grid > *,
+.project-related > *,
+.project-content > * {
+  min-width: 0;
+}
+
+/* Safe-area aware fixed chrome. */
+.site-header {
+  padding-left: env(safe-area-inset-left, 0px) !important;
+  padding-right: env(safe-area-inset-right, 0px) !important;
+}
+.vm-nav {
+  width: 100%;
+}
+.nav-drawer {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Filter controls become a deliberate horizontal control rail on phones.
+   This avoids multi-line filter walls and never widens the page itself. */
+@media (max-width: 599px) {
+  .vm-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-inline: calc(var(--vm-page-pad-x) * -1);
+    padding-inline: var(--vm-page-pad-x);
+    padding-bottom: 0.85rem;
+    scroll-padding-inline: var(--vm-page-pad-x);
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .vm-filter {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    white-space: nowrap;
+  }
+}
+
+/* Action groups become thumb-friendly without forcing isolated text links
+   such as tertiary editorial CTAs to full width. */
+@media (max-width: 519px) {
+  .vm-hero__actions,
+  .vm-contact__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .vm-hero__actions .vm-btn:not(.vm-btn--tertiary),
+  .vm-contact__actions .vm-btn:not(.vm-btn--tertiary) {
+    width: 100%;
+  }
+
+  .vm-contact {
+    gap: 1.5rem;
+  }
+}
+
+/* Footer remains readable rather than becoming one long wrapped link row. */
+@media (max-width: 639px) {
+  .site-footer .max-w-8xl {
+    padding-inline: var(--vm-page-pad-x) !important;
+  }
+  .footer-nav {
+    width: 100%;
+  }
+  .footer-nav__list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.35rem 1rem !important;
+    width: 100%;
+  }
+  .footer-nav__list a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    white-space: normal;
+  }
+}
+
+/* Small-phone design floor. */
+@media (max-width: 479px) {
+  :root {
+    --vm-page-pad-x: clamp(1rem, 5vw, 1.25rem);
+    --vm-gutter: 1rem;
+    --vm-section-expansive: clamp(3.75rem, 16vw, 5rem);
+    --vm-section-standard: clamp(3rem, 13vw, 4rem);
+    --vm-section-compact: clamp(2.25rem, 10vw, 3rem);
+    --vm-display-xl: clamp(2.3rem, 12vw, 3.1rem);
+    --vm-display-lg: clamp(2rem, 10vw, 2.65rem);
+    --vm-display-md: clamp(1.6rem, 8vw, 2.05rem);
+    --vm-lead: 1.05rem;
+  }
+
+  body {
+    line-height: 1.58;
+  }
+
+  .vm-page-head {
+    padding-top: calc(var(--vm-header-h) + 2.75rem);
+  }
+
+  .vm-hero {
+    padding-top: calc(var(--vm-header-h) + 3rem);
+  }
+
+  .vm-hero__grid {
+    gap: 1.75rem;
+  }
+
+  .vm-hero__headline {
+    max-width: none;
+  }
+
+  .vm-hero__portrait {
+    width: min(100%, 20rem);
+  }
+
+  .vm-img--portrait-tight {
+    aspect-ratio: 4 / 3;
+  }
+
+  .vm-proof {
+    grid-template-columns: 1fr;
+  }
+
+  .vm-feature {
+    gap: 1.1rem;
+  }
+
+  .vm-feature__media {
+    aspect-ratio: 16 / 10;
+  }
+
+  .vm-feature__title {
+    margin-top: 0.55rem;
+  }
+
+  .vm-profile {
+    gap: 1.75rem;
+  }
+
+  .vm-profile__figure {
+    width: min(100%, 22rem);
+  }
+
+  .vm-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .vm-metric {
+    padding: 1.35rem 0;
+  }
+
+  .vm-chrono__item {
+    padding-block: 1.65rem;
+  }
+
+  .vm-chrono__current {
+    display: inline-flex;
+    margin: 0.5rem 0 0;
+    vertical-align: top;
+  }
+
+  .vm-photo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vm-publication__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .vm-publication__title {
+    max-width: none;
+  }
+
+  .vm-resource-link {
+    align-items: flex-start;
+    min-height: 64px;
+  }
+
+  .vm-event-feature__media {
+    width: 100%;
+    max-width: 24rem;
+  }
+
+  .vm-event-feature__body {
+    width: 100%;
+  }
+
+  .vm-event-meta > div {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .vm-doc {
+    padding-block: 1.5rem;
+  }
+
+  .vm-doc__action,
+  .vm-doc__action .vm-btn {
+    width: 100%;
+  }
+
+  .vm-doc__action .vm-btn {
+    justify-content: space-between;
+    white-space: normal;
+  }
+
+  .back-to-top {
+    right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Tablet: preserve breathing room while keeping the mobile nav until 900px. */
+@media (min-width: 600px) and (max-width: 899px) {
+  .vm-hero__portrait {
+    width: min(100%, 30rem);
+  }
+  .vm-photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .vm-publication-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Dynamic-viewport lightbox hardening. */
+.lightbox {
+  min-height: 100dvh;
+}
+.lightbox__shell {
+  width: min(1100px, 100%);
+  max-width: calc(100vw - max(1rem, env(safe-area-inset-left, 0px)) - max(1rem, env(safe-area-inset-right, 0px)));
+  max-height: calc(100dvh - max(1rem, env(safe-area-inset-top, 0px)) - max(1rem, env(safe-area-inset-bottom, 0px)));
+}
+.lightbox__figure {
+  min-width: 0;
+  width: 100%;
+}
+.lightbox__figure img {
+  max-width: 100%;
+}
+
+@media (max-width: 599px) {
+  .lightbox {
+    align-items: stretch;
+    padding: max(0.5rem, env(safe-area-inset-top, 0px))
+             max(0.5rem, env(safe-area-inset-right, 0px))
+             max(0.5rem, env(safe-area-inset-bottom, 0px))
+             max(0.5rem, env(safe-area-inset-left, 0px));
+  }
+  .lightbox__shell {
+    justify-content: center;
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .lightbox__figure img {
+    max-height: 68dvh;
+  }
+  .lightbox__caption {
+    width: 100%;
+    padding-inline: 3.25rem;
+  }
+}
+
+
+/* ============================================================================
+   PAGE-SPECIFIC RESPONSIVE CONTRACTS — v5.4
+   ========================================================================== */
+
+/* ---------- Home / leadership / selected work ---------------------------- */
+@media (max-width: 899px) {
+  .vm-feature {
+    grid-template-columns: 1fr !important;
+  }
+  .vm-feature:nth-child(even) .vm-feature__media {
+    order: 0 !important;
+  }
+  .vm-feature__body {
+    width: 100%;
+  }
+
+  .vm-profile {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vm-philosophy__grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vm-contact {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vm-index__item,
+  .vm-chrono__item,
+  .vm-geo {
+    width: 100%;
+  }
+}
+
+/* ---------- Project index ------------------------------------------------ */
+.vm-project-item {
+  min-width: 0;
+}
+.vm-project-item .vm-feature__media,
+.vm-project-item .vm-feature__body {
+  min-width: 0;
+}
+@media (max-width: 599px) {
+  #projects-grid {
+    gap: 3.25rem !important;
+  }
+  .vm-project-item .vm-feature__media {
+    aspect-ratio: 16 / 10;
+  }
+  .vm-project-item .vm-feature__summary,
+  .vm-project-item .vm-feature__outcome {
+    max-width: none;
+  }
+}
+
+/* ---------- Project detail ---------------------------------------------- */
+.project-content {
+  width: min(100%, var(--vm-max-w));
+  margin-inline: auto;
+  padding-inline: var(--vm-page-pad-x) !important;
+}
+.project-content--prose {
+  width: min(100%, 52rem);
+}
+
+.project-hero__content {
+  width: min(100%, var(--vm-max-w));
+  padding-left: var(--vm-page-pad-x) !important;
+  padding-right: var(--vm-page-pad-x) !important;
+}
+.project-hero__meta {
+  row-gap: 0.35rem;
+}
+.project-hero__title,
+.project-hero__summary {
+  min-width: 0;
+}
+.project-gallery,
+.project-impact-list {
+  min-width: 0;
+}
+.project-gallery__item,
+.project-impact-item,
+.project-related {
+  min-width: 0;
+}
+.project-related__body {
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .project-hero {
+    min-height: clamp(28rem, 82svh, 38rem) !important;
+    height: auto !important;
+  }
+  .project-hero__content {
+    position: relative !important;
+    margin-top: auto;
+    padding-top: calc(var(--vm-header-h) + 5rem) !important;
+    padding-bottom: 1.75rem !important;
+  }
+  .project-hero__title {
+    max-width: 16ch;
+    font-size: clamp(2rem, 10vw, 2.8rem) !important;
+    line-height: 1.06;
+  }
+  .project-hero__summary {
+    max-width: 42ch;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .project-hero__scrim {
+    background:
+      linear-gradient(180deg, rgba(7, 26, 51, 0.32) 0%, rgba(7, 26, 51, 0.36) 38%, rgba(7, 26, 51, 0.86) 78%, rgba(7, 26, 51, 0.96) 100%) !important;
+  }
+
+  .project-overview-section,
+  .project-gallery-section,
+  .project-impact-section,
+  .project-related-section {
+    padding-block: var(--vm-section-standard) !important;
+  }
+
+  .project-gallery {
+    grid-template-columns: 1fr !important;
+  }
+  .project-gallery__item {
+    aspect-ratio: 16 / 10 !important;
+  }
+
+  .project-impact-list {
+    grid-template-columns: 1fr !important;
+  }
+  .project-impact-item {
+    padding: 1rem !important;
+  }
+
+  .project-related {
+    grid-template-columns: 1fr !important;
+  }
+  .project-related__media {
+    min-height: 0 !important;
+    aspect-ratio: 16 / 10 !important;
+  }
+  .project-related__body {
+    padding: 1rem 0 0 !important;
+  }
+
+  .prose-cs h2 {
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 399px) {
+  .project-hero__meta {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+  }
+  .project-hero__dot {
+    width: 3px;
+    height: 3px;
+  }
+}
+
+/* ---------- Gallery ------------------------------------------------------ */
+.gallery-card,
+.gallery-card__media,
+.gallery-card__meta {
+  min-width: 0;
+}
+.gallery-card__meta {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 639px) {
+  .gallery-masonry {
+    columns: 1 !important;
+  }
+  .gallery-masonry > * {
+    margin-bottom: 1.5rem;
+  }
+  .gallery-card__meta {
+    padding-top: 0.8rem !important;
+  }
+  #gallery-empty {
+    padding-block: 2.5rem !important;
+  }
+}
+
+/* ---------- Speaking ----------------------------------------------------- */
+@media (max-width: 799px) {
+  .vm-event-feature {
+    grid-template-columns: 1fr !important;
+  }
+  .vm-event-feature__media {
+    justify-self: start;
+  }
+}
+@media (max-width: 599px) {
+  body[data-page="speaking"] .vm-hero__portrait {
+    width: min(100%, 22rem);
+  }
+  body[data-page="speaking"] .vm-img--portrait-ed {
+    aspect-ratio: 4 / 3;
+  }
+  body[data-page="speaking"] .vm-event-feature__media {
+    aspect-ratio: 4 / 5;
+  }
+  body[data-page="speaking"] .vm-photo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Appendix ----------------------------------------------------- */
+.vm-doc__body {
+  min-width: 0;
+}
+@media (max-width: 899px) {
+  .vm-doc {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    align-items: start;
+  }
+  .vm-doc__action {
+    grid-column: 2;
+  }
+}
+@media (max-width: 479px) {
+  .vm-doc {
+    grid-template-columns: 1fr;
+  }
+  .vm-doc__num,
+  .vm-doc__body,
+  .vm-doc__action {
+    grid-column: 1;
+  }
+  .vm-doc__num {
+    padding-top: 0;
+  }
+}
+
+/* ---------- Very narrow phones ------------------------------------------ */
+@media (max-width: 359px) {
+  .vm-nav {
+    gap: 0.5rem;
+  }
+  .vm-nav__brand {
+    gap: 0.45rem;
+  }
+  .vm-nav__brand .brand-logo--nav {
+    width: 30px;
+    height: 30px;
+  }
+  .vm-nav__brand .brand-name {
+    font-size: 0.8125rem;
+  }
+  .vm-nav__icon-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+
+  .vm-display {
+    letter-spacing: -0.025em;
+  }
+
+  .vm-index__item {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+
+  .vm-publication__meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+  .vm-publication__meta [aria-hidden="true"] {
+    display: none;
+  }
+}

@@ -1,66 +1,57 @@
-﻿# Security
+# Security
 
-**Version:** 1.2.0
-
----
-
-## Table of contents
-
-1. [Threat model](#threat-model)
-2. [External links](#external-links)
-3. [XSS posture](#xss-posture)
-4. [Dependencies](#dependencies)
-5. [Secrets](#secrets)
-6. [Deployment](#deployment)
-7. [Recommendations](#recommendations)
-
----
+**Status:** current for v5.4.0
 
 ## Threat model
 
-Static brochure site with no forms, auth, or databases. Primary risks: XSS via unsafe HTML injection, malicious third-party CDNs, and open redirects (not currently used).
+Static public portfolio with no forms, authentication, database or server-side application code.
 
----
+Primary risks are:
 
-## External links
-
-Outbound links (WhatsApp, LinkedIn, CV) use `rel="noopener noreferrer"` with `target="_blank"` where applicable.
-
----
+- unsafe HTML interpolation,
+- compromised third-party CDN resources,
+- accidental publication of private/source material,
+- unsafe external-link behavior.
 
 ## XSS posture
 
-Dynamic HTML is built with template strings. User-controlled data should always pass through `esc()` (layout/pages). Content is currently author-controlled in repo files — still escape consistently when adding CMS input later.
+Rendered content is repository-controlled, but dynamic strings are still escaped through the existing `esc()` helpers before interpolation.
 
----
+If a CMS is introduced later, escaping/sanitization requirements become security-critical.
+
+## External links
+
+New-tab external links use `rel="noopener noreferrer"` where applicable.
 
 ## Dependencies
 
-CDN scripts (Tailwind, Lucide) are third parties. Prefer:
+Runtime third parties:
 
-- Pinning versions
-- Subresource Integrity (SRI) if self-hosting or locking URLs
-- Periodic review of CDN availability
+- Google Fonts,
+- Lucide 0.468.0.
 
----
+Lucide is pinned; `@latest` is no longer used.
+
+Development-only Playwright dependencies are not shipped to production.
 
 ## Secrets
 
-No server secrets. Do not commit private analytics keys or SMTP credentials if added later. Use host env vars for any future backend.
+No runtime secrets are required.
 
----
+Do not commit:
+- environment files,
+- analytics secrets,
+- private API keys,
+- SMTP credentials,
+- private signed agreements that are not cleared for publication.
 
 ## Deployment
 
-- Serve over HTTPS
-- Keep software on the host patched
-- Restrict directory listing
-- Do not expose `.git` on public hosts
+- enforce HTTPS,
+- prevent directory listing on hosts where relevant,
+- never expose `.git`,
+- keep static host/platform security settings current.
 
----
+## Future hardening
 
-## Recommendations
-
-1. Replace Lucide `@latest` with a pinned version.
-2. Add Content-Security-Policy at the host layer when CDNs are finalized.
-3. Add `.gitignore` excluding OS junk and local env files.
+A Content-Security-Policy is worth adding when the remaining CDN strategy is finalized.

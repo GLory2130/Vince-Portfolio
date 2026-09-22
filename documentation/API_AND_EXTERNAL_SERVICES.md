@@ -1,78 +1,45 @@
-﻿# API and External Services
+# API and External Services
 
-**Version:** 1.2.0
+**Status:** current for v5.4.0
 
-This project has **no first-party HTTP API**. Integrations are client-side links and CDNs.
-
----
-
-## Table of contents
-
-1. [Contact channels](#contact-channels)
-2. [Social](#social)
-3. [CDN dependencies](#cdn-dependencies)
-4. [Fonts](#fonts)
-5. [Hosting](#hosting)
-6. [Analytics](#analytics)
-7. [Local storage](#local-storage)
-
----
+The portfolio has no first-party HTTP API. External integrations are public links and CDN-hosted assets.
 
 ## Contact channels
 
-| Channel | Value / endpoint |
-|---------|------------------|
+Configured in `assets/js/config.js`.
+
+| Channel | Endpoint |
+|---|---|
 | WhatsApp | `https://wa.me/255713582606` |
 | Phone | `tel:+255713582606` |
 | Email | `mailto:manilavicent@gmail.com` |
-| Display phone | `+255 713 582 606` |
-| Display email | `manilavicent@gmail.com` |
+| LinkedIn | `https://www.linkedin.com/in/vicent-manila` |
 
-Configured in `assets/js/config.js` → `VM.site.contact`.
+## Runtime third parties
 
----
+| Service | Purpose | Treatment |
+|---|---|---|
+| Google Fonts | Source Serif 4 + Plus Jakarta Sans | preconnect + display swap |
+| Lucide 0.468.0 | icons | version pinned; deferred |
 
-## Social
+Tailwind CDN is not used.
 
-| Service | URL |
-|---------|-----|
-| LinkedIn | `https://www.linkedin.com/in/vicentmanila` |
+## External editorial links
 
----
+Verified external resources live in `VM.data.externalResources`. Current examples include:
 
-## CDN dependencies
+- Full Shangwe coverage of the Barrick/UDOM university conference.
+- Mzumbe University Career Fair Instagram post.
+- Men's Circle event page.
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Tailwind CSS | `https://cdn.tailwindcss.com` | Utility CSS |
-| Lucide | `https://unpkg.com/lucide@latest/dist/umd/lucide.min.js` | Icons |
-| Google Fonts | `fonts.googleapis.com` / `fonts.gstatic.com` | Typography |
+External links opened in a new tab use `rel="noopener noreferrer"`.
 
-**Note:** Pin Lucide to a specific version in production to avoid surprise icon API changes from `@latest`.
+## Analytics and storage
 
----
+No analytics package is installed.
 
-## Fonts
-
-- Plus Jakarta Sans (UI)
-- Source Serif 4 (display)
-
----
+The site ships a single light theme and does not store a theme preference in local storage.
 
 ## Hosting
 
-Static hosting / Apache. No server-side API keys.
-
----
-
-## Analytics
-
-None installed. If added later, document the vendor, consent requirements, and script location here.
-
----
-
-## Local storage
-
-| Key | Purpose |
-|-----|---------|
-| `vm-theme` | `light` / `dark` preference |
+Static hosting only. No server-side API keys or runtime secrets are required.

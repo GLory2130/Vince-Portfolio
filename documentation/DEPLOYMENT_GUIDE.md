@@ -1,110 +1,69 @@
-﻿# Deployment Guide
+# Deployment Guide
 
-**Version:** 1.2.0
+**Status:** current for v5.4.0
 
----
+## Production requirement
 
-## Table of contents
+Any static HTTP host is sufficient. There is no production build step.
 
-1. [Requirements](#requirements)
-2. [Run locally](#run-locally)
-3. [Production checklist](#production-checklist)
-4. [Apache / XAMPP](#apache--xampp)
-5. [Static hosts (Vercel, Netlify, etc.)](#static-hosts-vercel-netlify-etc)
-6. [Domain and HTTPS](#domain-and-https)
-7. [Environment variables](#environment-variables)
-8. [Troubleshooting](#troubleshooting)
+Node/npm are required only when running repository QA.
 
----
-
-## Requirements
-
-- Any static HTTP server
-- Modern browsers
-- Optional: Apache with `mod_rewrite` / `mod_expires` / `mod_deflate` for `.htaccess`
-
-**Node.js is not required** to run the site. No build command exists.
-
----
-
-## Run locally
+## Local serving
 
 ### XAMPP
 
-1. Copy project to `htdocs/Vince-Portfolio` (or update `.htaccess` `RewriteBase`).
-2. Start Apache.
-3. Visit `http://localhost/Vince-Portfolio/`.
+Place the repository under `htdocs/Vince-Portfolio`, start Apache and open:
 
-### Simple static server
+`http://localhost/Vince-Portfolio/`
+
+### Python
 
 ```bash
-cd Vince-Portfolio
-npx --yes serve .
+python -m http.server 8899
 ```
 
----
+Open `http://localhost:8899/index.html`.
+
+## Local QA
+
+```bash
+npm install
+npm run validate
+npm run test:responsive
+```
+
+The responsive suite expects a local server on port 4173 when run directly through Playwright; CI starts that server automatically.
 
 ## Production checklist
 
-- [ ] `assets/cv/vicent-manila-cv.pdf` present
-- [ ] Contact details verified in `config.js`
-- [ ] All images 200 OK
-- [ ] Favicons and manifest resolve
-- [ ] Mobile menu + lightbox smoke-tested
-- [ ] HTTPS enabled on domain
-- [ ] Update `.htaccess` `RewriteBase` if not hosted in `/Vince-Portfolio/`
-- [ ] Consider adding `robots.txt` + `sitemap.xml`
+- CV exists at the stable public path.
+- All local assets resolve.
+- Contact details are current.
+- `VM.version` matches all shell `?v=` references.
+- PR CI passes.
+- Vercel preview is reviewed.
+- Mobile navigation and lightboxes are manually smoke-tested.
+- HTTPS is enabled.
+- sitemap/robots remain valid.
 
----
+## Vercel/static hosts
 
-## Apache / XAMPP
+- framework preset: none,
+- build command: none,
+- output directory: repository root.
 
-`.htaccess` currently assumes:
+The repository's npm tooling is for CI/QA and does not need to run during production deployment.
 
-```apache
-RewriteBase /Vince-Portfolio/
-```
+## Apache
 
-For domain root hosting, change to:
-
-```apache
-RewriteBase /
-```
-
-Features: `DirectoryIndex index.html`, extensionless → `.html`, compression, cache headers.
-
----
-
-## Static hosts (Vercel, Netlify, etc.)
-
-1. Import the git repository or drag-and-drop the folder.
-2. **Build command:** leave empty / `exit 0`.
-3. **Publish directory:** repository root (`.`).
-4. Disable framework preset (this is not Next/React).
-5. Add custom domain + HTTPS in the host dashboard.
-
-Clean URLs may need host-specific redirects if `.htaccess` is ignored (Netlify `_redirects`, Vercel `vercel.json`).
-
----
-
-## Domain and HTTPS
-
-Terminate TLS at the host or reverse proxy. No app-level HTTPS logic.
-
----
-
-## Environment variables
-
-None required for core functionality. Theme preference is client-only (`localStorage`).
-
----
+`.htaccess` includes caching/compression and assumes the XAMPP-style project path. If hosting at a different Apache base path, review `RewriteBase`.
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| CSS/JS 404 | Check relative paths; open via HTTP not `file://` |
-| Clean URLs 404 | Adjust `RewriteBase` or host redirects |
-| CV 404 | Add PDF under `assets/cv/` |
-| Icons missing | Ensure Lucide CDN reachable; call `refreshIcons` after DOM inject |
-| Menu clipped | Confirm drawer is sibling of header (current architecture) |
+| Symptom | Check |
+|---|---|
+| stale CSS/JS | verify `?v=` matches `VM.version` |
+| missing icon | verify pinned Lucide CDN request |
+| mobile overflow | run responsive suite + overflow diagnostic |
+| menu scroll issue | verify fixed-body lock and dynamic viewport rules |
+| CV 404 | verify `assets/cv/vicent-manila-cv.pdf` |
