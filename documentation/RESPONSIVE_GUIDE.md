@@ -1,6 +1,6 @@
 # Responsive Guide
 
-**Status:** current for v5.4.0  
+**Status:** current for v5.5.1  
 **Mobile floor:** 320px  
 **Navigation breakpoint:** 900px
 
@@ -76,6 +76,15 @@ Site-wide protections include:
 | Appendix | documents stack; download actions full width | number/body/action flow | 3-column document rows |
 
 ---
+
+### Face-safe portrait media
+
+Photographs flagged as portraits in `VM.data` have dedicated aspect ratios:
+featured case studies use 5:4, article imagery uses 4:3 and both use 4:5 on
+phones below 600px. The image focal point travels through to Executive
+Profile thumbnails and case-study heroes. Confirm image loading and top-of-head
+visibility in the mobile and desktop QA matrix; a centered crop on the
+original portrait image is not acceptable.
 
 ## 5. Touch targets
 

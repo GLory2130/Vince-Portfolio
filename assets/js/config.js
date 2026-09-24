@@ -5,7 +5,7 @@
 window.VM = window.VM || {};
 
 /** Semantic version of this portfolio codebase */
-VM.version = '5.4.0';
+VM.version = '5.5.1';
 
 VM.site = {
   name: 'Vicent Manila',

@@ -104,6 +104,8 @@
       const d = D();
       const img = VM.images || {};
       const featured = VM.featuredProjects().slice(0, 3);
+      const careerCases = ['innovex-consulting', 'mo-dewji-livelihoods']
+        .map(slug => VM.getProject(slug)).filter(Boolean);
 
       return `
         <!-- ============ HERO — expansive ============ -->
@@ -145,7 +147,7 @@
         <section class="vm-section--expansive" id="work">
           <div class="vm-container">
             <p class="vm-eyebrow vm-eyebrow--ruled">Selected Work</p>
-            <h2 class="vm-display-lg vm-mb-lg">Case studies in partnership<br>and organizational growth</h2>
+            <h2 class="vm-display-lg vm-mb-lg">Consulting, livelihoods<br>and leadership in practice</h2>
           </div>
           <div class="vm-container vm-features">
             ${featured.map((p, i) => VM.pages.projectFeature(p, i)).join('')}
@@ -166,7 +168,7 @@
             </div>
             <div class="vm-publication-grid">
               ${d.externalResources.map((resource, i) => `
-                <article class="vm-publication">
+                <article class="vm-publication${resource.imageFraming === 'portrait' ? ' vm-publication--portrait' : ''}">
                   <a class="vm-publication__media vm-img-frame"
                      href="${esc(resource.url)}"
                      target="_blank" rel="noopener noreferrer"
@@ -174,7 +176,7 @@
                     <img class="vm-img"
                          src="${esc(resource.image)}"
                          alt="${esc(resource.imageAlt || resource.title)}"
-                         width="1200" height="750"
+                         width="${resource.imageFraming === 'portrait' ? 800 : 1200}" height="${resource.imageFraming === 'portrait' ? 1200 : 750}"
                          loading="lazy" decoding="async"
                          style="object-position:${imgPos(resource.imagePosition)}">
                   </a>
@@ -206,6 +208,25 @@
             <div class="vm-profile__intro">
               <p class="vm-eyebrow vm-eyebrow--ruled">Executive Profile</p>
               <div class="vm-prose vm-profile__body"><p>${esc(d.about.summary)}</p></div>
+              <div class="vm-profile-cases" aria-labelledby="profile-case-heading">
+                <h3 id="profile-case-heading" class="vm-profile-cases__heading">Explore the work</h3>
+                ${careerCases.map(p => `
+                  <a class="vm-profile-case" href="project.html?slug=${encodeURIComponent(p.slug)}"
+                     aria-label="Explore ${esc(p.title)} case study">
+                    <img class="vm-profile-case__image" src="${esc(p.image)}" alt=""
+                         width="112" height="84" loading="lazy" decoding="async"
+                         style="object-position:${imgPos(p.imagePosition)}">
+                    <span class="vm-profile-case__copy">
+                      <span class="vm-profile-case__type">${esc(p.category_label)}</span>
+                      <strong>${esc(p.slug === 'innovex-consulting' ? 'INNOVEX Consulting' : 'Mo Dewji Foundation')}</strong>
+                      <span class="vm-profile-case__action">View case study <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i></span>
+                    </span>
+                  </a>`).join('')}
+                <div class="vm-profile-cases__actions">
+                  <a class="vm-btn vm-btn--tertiary" href="${esc(s.cv)}" target="_blank" rel="noopener noreferrer">View full CV</a>
+                  <a class="vm-btn vm-btn--tertiary" href="leadership.html">Explore leadership experience</a>
+                </div>
+              </div>
               <dl class="vm-facts">
                 <div class="vm-facts__row">
                   <dt class="vm-eyebrow">Education</dt>
@@ -401,6 +422,9 @@
             <ul class="vm-chrono__outcomes">
               ${r.outcomes.map(o => `<li>${esc(o)}</li>`).join('')}
             </ul>` : ''}
+            ${r.caseStudySlug ? `<a class="vm-chrono__case-link" href="project.html?slug=${encodeURIComponent(r.caseStudySlug)}">
+              Explore the case study <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+            </a>` : ''}
           </div>
         </article>`;
     },
@@ -410,7 +434,8 @@
       return `
         <article class="reveal project-card group" style="--d:${delay(i, 0.08)}; --img-pos:${pos}">
           <a href="project.html?slug=${encodeURIComponent(p.slug)}" class="project-card__media" aria-label="${esc(p.title)} case study">
-            <img src="${esc(p.image)}" alt="${esc(p.title)}" width="900" height="562" loading="lazy" decoding="async">
+            <img src="${esc(p.image)}" alt="${esc(p.title)}" width="900" height="562" loading="lazy" decoding="async"
+                 style="object-position:${pos}">
           </a>
           <div class="project-card__body">
             <span class="project-card__category">${esc(p.category_label)}</span>
@@ -432,12 +457,12 @@
       const pos = imgPos(p.imagePosition);
       const h = level === 2 ? 'h2' : 'h3';
       return `
-        <article class="vm-feature">
+        <article class="vm-feature${p.imageFraming === 'portrait' ? ' vm-feature--portrait' : ''}">
           <a class="vm-feature__media vm-img-frame vm-img--case-hero"
              href="project.html?slug=${encodeURIComponent(p.slug)}"
              aria-label="${esc(p.title)} — view case study">
             <img class="vm-img" src="${esc(p.image)}" alt="${esc(p.title)}"
-                 width="1100" height="733" loading="lazy" decoding="async"
+                 width="${p.imageFraming === 'portrait' ? 800 : 1100}" height="${p.imageFraming === 'portrait' ? 1200 : 733}" loading="lazy" decoding="async"
                  style="object-position:${pos}">
           </a>
           <div class="vm-feature__body">
@@ -550,7 +575,7 @@
           <div class="vm-container">
             <p class="vm-eyebrow vm-eyebrow--ruled">Selected Work</p>
             <h1 class="vm-display">Case Studies</h1>
-            <p class="vm-lead vm-mt-md">Selected assignments and leadership work presented as case studies, with supporting documents linked where public evidence is available.</p>
+            <p class="vm-lead vm-mt-md">Explore consulting, livelihoods, vocational pathways, partnerships and leadership through independent case studies and documented experience.</p>
           </div>
         </section>
 
@@ -659,7 +684,7 @@
         </section>` : '';
 
       root.innerHTML = `
-        <section class="project-hero" aria-labelledby="project-title" style="--img-pos:${heroPos}">
+        <section class="project-hero${['consulting', 'livelihoods'].includes(project.category) ? ' project-hero--editorial' : ''}" aria-labelledby="project-title" style="--img-pos:${heroPos}">
           <div class="project-hero__media">
             <img src="${esc(project.image)}" alt="${esc(project.title)}" class="project-hero__img" width="1920" height="1080" fetchpriority="high" decoding="async">
             <div class="project-hero__scrim" aria-hidden="true"></div>
@@ -713,7 +738,7 @@
           <div class="project-content max-w-8xl mx-auto px-6">
             <div class="project-section-head project-section-head--light">
               <p class="section-label mb-3">Outcomes</p>
-              <h2 id="project-impact-heading" class="section-title text-white">Impact Metrics</h2>
+              <h2 id="project-impact-heading" class="section-title text-white">${esc(project.outcomeHeading || 'Selected Outcomes')}</h2>
               <div class="project-gold-rule" aria-hidden="true"></div>
             </div>
             <ul class="project-impact-list">

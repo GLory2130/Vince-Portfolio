@@ -11,17 +11,17 @@
     hero: {
       eyebrow: 'Management Consulting',
       headline: 'Management Consultant · Strategy · Partnerships · Research & Evaluation',
-      summary: 'Management consultant working across strategy, partnerships, research and evaluation. His experience spans private and public sector programmes, field monitoring and evaluation, and national leadership roles in Tanzania and Rwanda.',
+      summary: 'Management consultant with experience in field research and evaluation, youth livelihoods and vocational pathways, strategic partnerships and organizational leadership across East Africa.',
       location: 'Dar es Salaam · Tanzania · East Africa',
       proof: [
-        'Management Consultant — INNOVEX Development Consulting Ltd',
-        'Field M&E — Tanga Yetu Project Phase 2',
-        'Former national leader — AIESEC in Tanzania & Rwanda',
+        'Consulting & Field Evaluation — INNOVEX',
+        'Livelihoods & Youth Entrepreneurship — Mo Dewji Foundation',
+        'National Leadership — AIESEC in Tanzania & Rwanda',
       ],
     },
 
     about: {
-      summary: 'Vicent Manila is a management consultant with experience in strategy, research and evaluation, partnership development and programme delivery. At INNOVEX Development Consulting Ltd, he supports field monitoring and evaluation for Tanga Yetu Project Phase 2. His earlier work spans youth livelihoods, national leadership, international business development and cross-border organizational support.',
+      summary: 'Vicent Manila works across management consulting, research and evaluation, livelihoods programmes and strategic partnerships. At INNOVEX Development Consulting Ltd, his current assignment involves field M&E for Tanga Yetu Project Phase 2. He previously coordinated sustainable livelihoods work at the Mo Dewji Foundation and led national organizations in Tanzania and Rwanda.',
       philosophy: 'Leadership is stewardship. Durable organizations are built when people have agency, partnerships create mutual value, and strategy becomes a system that can outlast any one leader.',
       mission: 'To help institutions and partnerships turn complex challenges into practical strategies, measurable programmes and stronger leadership systems.',
 
@@ -29,7 +29,7 @@
         { title: 'Management & Strategy', desc: 'Organizational problem solving, strategy formulation and practical execution.', competencies: ['Management Consulting', 'Strategic Planning', 'Business Intelligence', 'Strategy Execution'] },
         { title: 'Research & Evaluation', desc: 'Field monitoring, programme evaluation and evidence-informed decision support.', competencies: ['Monitoring & Evaluation', 'Field M&E', 'Research', 'Performance Reporting'] },
         { title: 'Strategic Partnerships', desc: 'Business development, partner engagement and institutional relationship management.', competencies: ['Partnership Development', 'Proposal Development', 'Negotiation', 'Corporate Relations'] },
-        { title: 'Programme & Project Leadership', desc: 'Programme coordination, stakeholder management and delivery across multi-stakeholder environments.', competencies: ['Programme Coordination', 'Stakeholder Management', 'Youth Livelihoods', 'Development Programmes'] },
+        { title: 'Programme & Project Leadership', desc: 'Programme coordination, stakeholder management and delivery across multi-stakeholder environments.', competencies: ['Programme Coordination', 'Stakeholder Management', 'Youth Livelihoods', 'Entrepreneurship Support', 'Vocational Pathways'] },
         { title: 'Organizational Leadership', desc: 'National leadership, governance, accountability and team performance systems.', competencies: ['National Leadership', 'Governance', 'Team Leadership', 'Organizational Development'] },
         { title: 'International Collaboration', desc: 'Cross-border work across national entities, global committees and business development portfolios.', competencies: ['Tanzania', 'Rwanda', 'AIESEC International', 'Belarus Entity Support'] },
       ],
@@ -79,6 +79,7 @@
         period: 'Jul 2026 — Present', current: true,
         title: 'Management Consultant',
         organization: 'INNOVEX Development Consulting Ltd', country: 'Dar es Salaam, Tanzania',
+        caseStudySlug: 'innovex-consulting',
         mandate: 'Supporting management consultancy, research and evaluation work across multi-sectoral programmes.',
         outcomes: [
           'Current assignment: Field Monitoring & Evaluation for Tanga Yetu Project Phase 2 in Tanga, Tanzania',
@@ -90,6 +91,7 @@
         period: 'Sep 2025 — Jun 2026',
         title: 'Sustainable Livelihoods Coordinator',
         organization: 'Mo Dewji Foundation', country: 'Dar es Salaam, Tanzania',
+        caseStudySlug: 'mo-dewji-livelihoods',
         mandate: 'Supported youth entrepreneurship and livelihood interventions focused on employability and economic inclusion.',
         outcomes: [
           'Conducted market assessments to inform programme design',
@@ -198,6 +200,8 @@
 
     projectCategories: {
       all: 'All Case Studies',
+      consulting: 'Consulting & Evaluation',
+      livelihoods: 'Livelihoods & Vocational Training',
       'business-development': 'Business Development',
       leadership: 'Leadership',
       'employer-branding': 'Employer Branding',
@@ -206,6 +210,85 @@
     },
 
     projects: [
+      {
+        slug: 'innovex-consulting',
+        title: 'Consulting & Field Evaluation — INNOVEX',
+        category: 'consulting',
+        category_label: 'Consulting & Evaluation',
+        badge: 'Current Assignment',
+        year: '2026–Present',
+        featured: true,
+        summary: 'Field monitoring and evaluation for Tanga Yetu Project Phase 2 with the INNOVEX Development Consulting team.',
+        description: 'Consulting, field monitoring and evaluation on an ongoing development project in Tanga.',
+        image: 'assets/images/case-studies/innovex-consulting.jpeg',
+        imagePosition: 'center',
+        overview: 'Vicent currently works as a Management Consultant at INNOVEX Development Consulting Ltd. His documented assignment includes field monitoring and evaluation for Tanga Yetu Project Phase 2 in Tanga, Tanzania.',
+        challenge: 'Effective programme monitoring depends on reliable field evidence. Detailed client deliverables and results from this ongoing assignment are not presented as public outcomes.',
+        objectives: [
+          'Support field monitoring and evaluation for Tanga Yetu Project Phase 2',
+          'Contribute field-level evidence within the consulting project team',
+          'Apply research and evaluation practices to the assignment',
+        ],
+        role: 'Management Consultant, INNOVEX Development Consulting Ltd. Current assignment: field monitoring and evaluation for Tanga Yetu Project Phase 2.',
+        strategy: 'Work within the project team on field monitoring and evaluation activities, with an emphasis on evidence-informed programme delivery.',
+        execution: 'Supports field-level M&E delivery as part of the INNOVEX project team. Specific client deliverables remain undisclosed.',
+        outcomeHeading: 'Scope & Contribution',
+        results: [
+          'Current consulting assignment: Tanga Yetu Project Phase 2',
+          'Field monitoring and evaluation as part of the consulting team',
+        ],
+        impact: 'This is an ongoing assignment; verified public outcome figures have not yet been provided.',
+        resources: [
+          { label: 'Consultant CV', href: 'assets/cv/vicent-manila-cv.pdf', type: 'CV' },
+        ],
+        gallery: [
+          { src: 'assets/images/case-studies/innovex-consulting.jpeg', alt: 'Photograph provided to document Vicent’s INNOVEX consulting experience', position: 'center' },
+        ],
+        related: ['mo-dewji-livelihoods', 'tanzania-national-partnerships'],
+      },
+      {
+        slug: 'mo-dewji-livelihoods',
+        title: 'Livelihoods & Vocational Pathways — Mo Dewji Foundation',
+        category: 'livelihoods',
+        category_label: 'Livelihoods & Vocational Training',
+        badge: 'Sustainable Livelihoods',
+        year: '2025–2026',
+        featured: true,
+        summary: 'Market assessments, ecosystem partnerships and programme coordination supporting youth livelihoods and entrepreneurship.',
+        description: 'Sustainable livelihoods coordination, market assessment and vocational-pathway programme work.',
+        image: 'assets/images/case-studies/mo-dewji-livelihoods-01.jpeg',
+        imagePosition: 'top',
+        imageFraming: 'portrait',
+        overview: 'From September 2025 to June 2026, Vicent served as Sustainable Livelihoods Coordinator at the Mo Dewji Foundation. His work supported youth entrepreneurship and livelihoods interventions focused on employability and economic inclusion, including discussions around vocational pathways.',
+        challenge: 'Livelihood interventions require market context, coordination with private-sector and ecosystem partners, and ongoing programme monitoring.',
+        objectives: [
+          'Conduct market assessments to inform programme design',
+          'Engage private-sector and ecosystem partners around livelihood opportunities',
+          'Contribute to programme monitoring, reporting and evaluation',
+        ],
+        role: 'Sustainable Livelihoods Coordinator, Mo Dewji Foundation, September 2025 – June 2026.',
+        strategy: 'Bring together market assessment, partner engagement and monitoring to support the design and delivery of youth livelihood interventions.',
+        execution: 'Conducted market assessments, engaged private-sector and ecosystem partners, and contributed to programme monitoring, reporting and evaluation.',
+        outcomeHeading: 'Programme Activities',
+        results: [
+          'Conducted market assessments to inform programme design',
+          'Engaged private-sector and ecosystem partners',
+          'Contributed to programme monitoring, reporting and evaluation',
+        ],
+        impact: 'The photographs document this area of work. Participant counts, placement rates and other impact metrics are not claimed without programme evidence.',
+        resources: [
+          { label: 'Consultant CV', href: 'assets/cv/vicent-manila-cv.pdf', type: 'CV' },
+        ],
+        gallery: [
+          { src: 'assets/images/case-studies/mo-dewji-livelihoods-02.jpeg', alt: 'Photograph supplied from Mo Dewji Foundation livelihoods programme work', position: 'center' },
+          { src: 'assets/images/case-studies/mo-dewji-livelihoods-03.jpeg', alt: 'Photograph supplied from Mo Dewji Foundation livelihoods programme work', position: 'center' },
+          { src: 'assets/images/case-studies/mo-dewji-livelihoods-04.jpeg', alt: 'Photograph supplied from Mo Dewji Foundation livelihoods programme work', position: 'top' },
+          { src: 'assets/images/case-studies/mo-dewji-livelihoods-05.jpeg', alt: 'Photograph supplied from Mo Dewji Foundation livelihoods programme work', position: 'top' },
+          { src: 'assets/images/case-studies/mo-dewji-livelihoods-06.jpeg', alt: 'Photograph supplied from Mo Dewji Foundation livelihoods programme work', position: 'center' },
+          { src: 'assets/images/case-studies/mo-dewji-livelihoods-07.jpeg', alt: 'Photograph supplied from Mo Dewji Foundation livelihoods programme work', position: 'top' },
+        ],
+        related: ['innovex-consulting', 'tanzania-national-partnerships'],
+      },
       {
         slug: 'leading-aiesec-rwanda',
         title: 'National Leadership — AIESEC in Rwanda',
@@ -218,6 +301,7 @@
         description: 'National leadership, governance and organizational performance across AIESEC in Rwanda.',
         image: 'assets/images/Vince/web/7.jpg',
         imagePosition: 'top',
+        imageFraming: 'portrait',
         overview: 'As Member Committee President, Vicent led national strategy implementation and organizational performance across AIESEC in Rwanda. The role covered three local chapters, five heads of department and a network of more than 300 members and alumni.',
         challenge: 'The mandate required consistent national direction across multiple chapters while maintaining reporting, accountability and leadership development systems.',
         objectives: [
@@ -614,7 +698,8 @@
         url: 'https://fullshangweblog.co.tz/2025/04/14/barrick-yadhamini-kongamano-la-wanafunzi-vyuo-vikuu-lililofanyika-chuo-kikuu-dodoma/',
         image: 'assets/images/Vince/web/gallery/event-11.jpg',
         imageAlt: 'Vicent Manila at a Barrick-supported university engagement',
-        imagePosition: 'center',
+        imagePosition: 'top',
+        imageFraming: 'portrait',
       },
       {
         title: 'Career Fair — Mzumbe University',

@@ -2,7 +2,7 @@
 
 Executive editorial portfolio for Vicent Manila, focused on management consulting, research and evaluation, strategic partnerships and organizational leadership.
 
-**Current version:** `5.4.0`
+**Current version:** `5.5.1`
 
 ## Start here
 

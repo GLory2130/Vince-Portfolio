@@ -157,3 +157,27 @@ The downloadable CV is an owner-supplied public asset. Any future CV replacement
 ## Standing rule
 
 Before adding a metric, role, testimonial, partner, article or media item, record its source here. If the claim cannot be sourced, it does not ship.
+
+
+---
+
+## 12. Independent consulting and livelihoods case studies — 2026-09-23
+
+The client's 23 September feedback requested separate INNOVEX consulting and
+Mo Dewji Foundation livelihoods/vocational-pathways case studies to distinguish
+these assignments from the AIESEC leadership portfolio.
+
+**Primary career record:** the updated consultant CV dated 4 September 2026,
+previously adopted by this repository. It documents the INNOVEX management
+consulting role with Tanga Yetu Project Phase 2 field M&E, and the Foundation's
+September 2025–June 2026 livelihoods coordination responsibilities.
+
+**Owner-supplied visual record:** the JPEGs committed on
+`master-codes-changes` on 23 September; selected photos were carried to the
+new branch with their original Git blob IDs and descriptive filenames.
+
+The new case studies explicitly present documented responsibilities and
+activities. No client-specific consulting result, Foundation trainee count,
+employment outcome, endorsement or photo-event attribution has been inferred.
+The existing approved consultant CV remains the public CV path. For a precise
+scope and image map, see [CASE_STUDIES_2026-09.md](./CASE_STUDIES_2026-09.md).

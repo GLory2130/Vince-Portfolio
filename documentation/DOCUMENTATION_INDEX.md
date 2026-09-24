@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Status:** current as of v5.4.0
+**Status:** current as of v5.5.1
 
 ## Start here
 
@@ -32,6 +32,7 @@
 | [CONTENT_VERIFICATION.md](./CONTENT_VERIFICATION.md) | Verified claims and source hierarchy |
 | [CONTENT_NEEDS_VERIFICATION.md](./CONTENT_NEEDS_VERIFICATION.md) | Content intentionally held back |
 | [IMAGE_ASSETS.md](./IMAGE_ASSETS.md) | Image inventory and handling |
+| [CASE_STUDIES_2026-09.md](./CASE_STUDIES_2026-09.md) | INNOVEX and Mo Dewji case-study provenance, photography and QA |
 
 ## Engineering & operations
 

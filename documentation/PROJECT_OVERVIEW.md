@@ -10,6 +10,8 @@ Present Vicent Manila as a credible management consultant and organizational lea
 
 The portfolio currently emphasizes:
 
+- independent management-consulting case study: INNOVEX field M&E for Tanga Yetu Phase 2,
+- Mo Dewji Foundation sustainable livelihoods and vocational-pathway experience,
 - management consulting,
 - research and evaluation,
 - strategic partnerships,

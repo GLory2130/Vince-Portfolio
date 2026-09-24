@@ -35,6 +35,21 @@ The updated consultant CV does not include either role. They have therefore been
 
 ---
 
+### Potential entrepreneurship showcase
+
+The client's 23 September feedback suggests a possible entrepreneurship section
+covering VMAN Enterprises and MigLine, potentially with product photographs.
+Before publishing standalone venture claims, confirm:
+
+- Which ventures are active, current official names, roles and dates;
+- A short factual description of each business and any products to feature;
+- Which product photos, brand marks and public business URLs may be published;
+- Whether either venture should appear in the published CV.
+
+Until then, the portfolio reflects the verified entrepreneurship component of
+Mo Dewji Foundation's youth-livelihoods work without implying ownership of an
+unconfirmed product or venture.
+
 ## 3. Testimonials or recommendations
 
 No testimonial is published without exact wording, attribution and approval.
