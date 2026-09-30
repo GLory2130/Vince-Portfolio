@@ -8,6 +8,8 @@ const root = path.resolve(process.cwd());
 const errors = [];
 const notes = [];
 
+const productionOrigin = 'https://www.vincentmanila.co.tz';
+
 const shells = {
   'index.html': 'home',
   'leadership.html': 'leadership',
@@ -55,6 +57,13 @@ for (const [file, page] of Object.entries(shells)) {
     `${file}: missing meta description`);
   assert(/<link\s+rel=["']canonical["'][^>]*href=/i.test(html),
     `${file}: missing canonical link`);
+  const expectedUrl = productionOrigin + (file === 'index.html' ? '/' : `/${file}`);
+  assert(html.includes(`<link rel="canonical" href="${expectedUrl}">`),
+    `${file}: canonical must use production URL`);
+  assert(html.includes(`<meta property="og:url" content="${expectedUrl}">`),
+    `${file}: Open Graph URL must use production URL`);
+  assert(!html.includes('vince-portfolio-xi.vercel.app'),
+    `${file}: legacy Vercel URL found`);
   assert(/<title>[^<]+<\/title>/i.test(html),
     `${file}: missing document title`);
   assert(/<meta\s+property=["']og:title["'][^>]*content=/i.test(html),
@@ -113,6 +122,27 @@ assert(css.includes('overflow-x: clip'),
   'design-system.css: horizontal overflow protection is missing');
 assert(css.includes('100dvh'),
   'design-system.css: dynamic viewport handling is missing');
+
+const robots = read('robots.txt');
+assert(robots.includes(`Sitemap: ${productionOrigin}/sitemap.xml`),
+  'robots.txt: production sitemap missing');
+const sitemap = read('sitemap.xml');
+assert(!sitemap.includes('vince-portfolio-xi.vercel.app'),
+  'sitemap.xml: legacy domain found');
+for (const file of Object.keys(shells)) {
+  const url = productionOrigin + (file === 'index.html' ? '/' : `/${file}`);
+  if (file !== 'project.html') {
+    assert(sitemap.includes(`<loc>${url}</loc>`), `sitemap.xml: missing ${file}`);
+  }
+}
+for (const icon of ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png',
+  'apple-touch-icon.png', 'android-chrome-192x192.png', 'android-chrome-512x512.png']) {
+  assert(fs.existsSync(path.join(root, 'assets/images', icon)), `Missing site icon: ${icon}`);
+}
+const manifest = JSON.parse(read('site.webmanifest'));
+for (const icon of manifest.icons || []) {
+  assert(fs.existsSync(path.join(root, icon.src)), `Manifest icon missing: ${icon.src}`);
+}
 
 const index = read('index.html');
 assert(index.includes('data-page="home"'), 'index.html must remain the home route');

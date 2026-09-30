@@ -615,6 +615,24 @@
       }
 
       document.title = `${project.title} — ${S().name}`;
+      const pageUrl = new URL('project.html', location.origin);
+      pageUrl.searchParams.set('slug', project.slug);
+      const description = project.summary || project.description ||
+        'An evidence-led case study from Vicent Manila’s professional work.';
+      const preview = new URL(project.image || VM.images.og, location.origin).href;
+      const setMeta = (selector, value) => {
+        const element = document.querySelector(selector);
+        if (element) element.setAttribute('content', value);
+      };
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', pageUrl.href);
+      setMeta('meta[name="description"]', description);
+      setMeta('meta[property="og:title"]', document.title);
+      setMeta('meta[property="og:description"]', description);
+      setMeta('meta[property="og:url"]', pageUrl.href);
+      setMeta('meta[property="og:image"]', preview);
+      setMeta('meta[name="twitter:title"]', document.title);
+      setMeta('meta[name="twitter:description"]', description);
+      setMeta('meta[name="twitter:image"]', preview);
 
       const heroPos = imgPos(project.imagePosition);
       const galleryItems = normalizeGallery(project);

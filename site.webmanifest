@@ -1,8 +1,8 @@
 {
   "name": "Vicent Manila",
   "short_name": "Vicent Manila",
-  "description": "International Business Development Leader — Leadership, Strategy, Partnerships",
-  "start_url": "./index.html",
+  "description": "Management consulting, research and evaluation, strategic partnerships and leadership.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0B1F3A",
   "theme_color": "#0B1F3A",
@@ -23,5 +23,6 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ]
+  ],
+  "scope": "/"
 }

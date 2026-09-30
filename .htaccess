@@ -2,7 +2,7 @@ DirectoryIndex index.html
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteBase /Vince-Portfolio/
+RewriteBase /
 
 # Clean URLs (static HTML)
 RewriteRule ^projects/?$ projects.html [L]
@@ -10,7 +10,7 @@ RewriteRule ^project/([a-z0-9-]+)/?$ project.html?slug=$1 [L,QSA]
 RewriteRule ^gallery/?$ gallery.html [L]
 RewriteRule ^leadership/?$ leadership.html [L]
 RewriteRule ^speaking/?$ speaking.html [L]
-RewriteRule ^media/?$ media.html [L]
+RewriteRule ^appendix/?$ appendix.html [L]
 </IfModule>
 
 <IfModule mod_deflate.c>
